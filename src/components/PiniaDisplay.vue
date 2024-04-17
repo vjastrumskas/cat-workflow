@@ -10,6 +10,7 @@ const katinas = useUserData();
     <h4>Amzius: {{ katinas.user.age }}</h4>
     <h4>Svoris: {{ katinas.user.weight }}</h4>
     <h4>Goal: {{ katinas.user.goal }}</h4>
+    <button @click="katinas.incrementGoal()">Increment Goal</button>
   </div>
 </template>
 

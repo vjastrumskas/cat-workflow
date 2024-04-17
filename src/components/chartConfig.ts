@@ -6,15 +6,27 @@ export function data() {
   return {
     labels: [
       ['Base Goal', katinas.user.goal],
-      ['Food', '231'],
+      ['Food', katinas.computeConsumedEnergy()],
       ['Exercise', '26'],
     ],
     datasets: [
       {
-        backgroundColor: ['#d7d7d7', '#ba51e4', '#ffc400'],
-        data: [2415, 231, 26],
+        backgroundColor: ['#e1ecf5', '#7ec099', '#ffc400'],
+        data: [
+          parseInt(
+            katinas.computeRemainder(
+              katinas.user.goal,
+              katinas.computeConsumedEnergy()
+            ),
+            10
+          ),
+          katinas.computeConsumedEnergy(),
+          26,
+        ],
         borderRadius: 5,
         drawBorder: false,
+        hoverBorderWidth: 1,
+        hoverBorderColor: '#646cff',
       },
     ],
   };

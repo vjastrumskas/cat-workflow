@@ -9,7 +9,14 @@ const katinas = useUserData();
   <div class="container-status-chart">
     <StatusDisplay />
     <div class="donut-inner">
-      <h5>{{ katinas.user.goal }}</h5>
+      <h5>
+        {{
+          katinas.computeRemainder(
+            katinas.user.goal,
+            katinas.computeConsumedEnergy()
+          )
+        }}
+      </h5>
     </div>
   </div>
 </template>

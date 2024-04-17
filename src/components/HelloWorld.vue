@@ -92,10 +92,11 @@ function submitForm() {
   width: 100%;
   height: 100%;
   overflow: auto;
-  backdrop-filter: blur(5px);
-  /* filter: blur(8px);
-  -webkit-filter: blur(8px); */
-  background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+  background-color: rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(
+    3px
+  ); /* These have to come together to make blur effect. */
+  backdrop-filter: blur(3px);
 }
 
 /* Modal Content/Box */

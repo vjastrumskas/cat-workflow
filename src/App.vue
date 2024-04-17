@@ -2,12 +2,15 @@
 import HelloWorld from './components/HelloWorld.vue';
 import PiniaDisplay from './components/PiniaDisplay.vue';
 import StatusDisplayContainer from './components/StatusDisplayContainer.vue';
+import FoodsContainer from './components/FoodsContainer.vue';
+import AddedFoodsContainer from './components/AddedFoodsContainer.vue';
 </script>
 
 <template>
   <HelloWorld />
   <StatusDisplayContainer />
-
+  <AddedFoodsContainer />
+  <FoodsContainer />
   <PiniaDisplay />
   <div>
     <a href="https://vitejs.dev" target="_blank">
