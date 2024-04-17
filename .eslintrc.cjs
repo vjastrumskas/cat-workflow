@@ -5,22 +5,24 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ["airbnb-base", "prettier"],
+  extends: ['airbnb-base', 'prettier', 'plugin:vue/vue3-essential'],
   overrides: [
     {
       env: {
         node: true,
       },
-      files: [".eslintrc.{js,cjs}"],
+      files: ['.eslintrc.{js,cjs}'],
       parserOptions: {
-        sourceType: "script",
+        sourceType: 'script',
       },
     },
   ],
+  parser: 'vue-eslint-parser',
   parserOptions: {
-    ecmaVersion: "latest",
+    parser: '@typescript-eslint/parser',
   },
+  plugins: ['@typescript-eslint'],
   rules: {
-    "no-param-reassign": "off",
+    'no-param-reassign': 'off',
   },
 };
