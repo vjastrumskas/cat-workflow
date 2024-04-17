@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useUserData } from '../stores/userData.ts';
 import StatusDisplay from './StatusDisplay.vue';
+import { useUserData } from '../stores/userData.ts';
 
 const katinas = useUserData();
 </script>

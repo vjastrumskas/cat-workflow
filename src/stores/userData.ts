@@ -12,7 +12,7 @@ interface User {
 export const useUserData = defineStore('user', () => {
   const user = ref<User>({
     name: 'xxx',
-    goal: '',
+    goal: '2500',
     weight: '',
     age: '',
   });

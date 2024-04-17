@@ -17,7 +17,7 @@ export default {
 </script>
 
 <template>
-  <Doughnut :data="data" :options="options" />
+  <Doughnut :data="data()" :options="options()" />
 </template>
 
 <style scoped></style>
