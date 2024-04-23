@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, Ref } from 'vue';
 import getWeekdaysWithDates from './computePossibleDays.ts';
 
-const x: Array<{
+interface WeekdayItem {
   weekday: string;
   calendarday: string;
   fullcalendarday: string;
   key: string;
   class: string;
   id: string;
-}> = ref(getWeekdaysWithDates());
+}
+
+const x: Ref<WeekdayItem[]> = ref(getWeekdaysWithDates());
 </script>
 
 <template>
