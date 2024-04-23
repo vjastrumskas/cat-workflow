@@ -2,13 +2,13 @@
 import { ref } from 'vue';
 import getWeekdaysWithDates from './computePossibleDays.ts';
 
-const x = ref(getWeekdaysWithDates());
+const obj = ref(getWeekdaysWithDates());
 </script>
 
 <template>
   <ul class="box-middle-dates">
     <router-link
-      v-for="date in x"
+      v-for="date in obj"
       :key="date.key"
       :to="`/date/${date.fullcalendarday}`"
     >
