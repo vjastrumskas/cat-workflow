@@ -3,12 +3,12 @@ import PiniaDisplay from '../components/PiniaDisplay.vue';
 import StatusDisplayContainer from '../components/StatusDisplayContainer.vue';
 import FoodsContainer from '../components/FoodsContainer.vue';
 import AddedFoodsContainer from '../components/AddedFoodsContainer.vue';
-import DaysBrowser from '../components/DaysBrowser.vue';
+import DatesNav from '../components/DatesNav.vue';
 </script>
 
 <template>
   <StatusDisplayContainer />
-  <DaysBrowser />
+  <DatesNav />
   <AddedFoodsContainer />
   <FoodsContainer />
   <PiniaDisplay />
