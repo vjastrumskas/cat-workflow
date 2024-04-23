@@ -6,8 +6,13 @@ const katinas = useUserData();
 
 <template>
   <div v-for="(item, index) in katinas.isAdded()" :key="'addedFood' + index">
-    <div @click="item.added = !item.added" class="item-food">
-      {{ item.food }} {{ item.added }}
+    <div class="item-food">
+      <button @click="katinas.incrementPortion(item.food, $route.params.date)">
+        +
+      </button>
+      <button @click="katinas.decrementPortion(item.food, $route.params.date)">
+        -</button
+      >{{ item.food }} {{ item.portion }}g
     </div>
   </div>
 </template>

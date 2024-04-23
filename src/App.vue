@@ -1,17 +1,11 @@
 <script setup lang="ts">
+import { RouterView } from 'vue-router';
 import HelloWorld from './components/HelloWorld.vue';
-import PiniaDisplay from './components/PiniaDisplay.vue';
-import StatusDisplayContainer from './components/StatusDisplayContainer.vue';
-import FoodsContainer from './components/FoodsContainer.vue';
-import AddedFoodsContainer from './components/AddedFoodsContainer.vue';
 </script>
 
 <template>
   <HelloWorld />
-  <StatusDisplayContainer />
-  <AddedFoodsContainer />
-  <FoodsContainer />
-  <PiniaDisplay />
+  <RouterView />
   <div>
     <a href="https://vitejs.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />

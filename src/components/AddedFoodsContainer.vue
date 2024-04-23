@@ -13,7 +13,10 @@ const katinas = useUserData();
 
 <style scoped>
 .container-added-foods {
-  height: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+  min-height: 50px;
   width: 300px;
   background-color: white;
   margin-top: 10px;

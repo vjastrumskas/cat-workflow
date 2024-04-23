@@ -6,16 +6,20 @@ const katinas = useUserData();
 
 <template>
   <div v-for="(item, index) in katinas.user.foods" :key="'food' + index">
-    <div @click="item.added = !item.added" class="item-food">
-      {{ item.food }} {{ item.added }}
+    <div
+      @click="katinas.insertFood(item.food, $route.params.date)"
+      class="item-food"
+    >
+      {{ item.food }}
     </div>
   </div>
 </template>
 
 <style scoped>
 .item-food {
-  padding: 5px;
+  padding: 10px;
   background-color: white;
+  font-size: 0.75em;
 }
 .item-food:hover {
   background-color: rgb(247, 247, 247);
