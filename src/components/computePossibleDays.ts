@@ -1,4 +1,11 @@
-export default function getWeekdaysWithDates() {
+export default function getWeekdaysWithDates(): Array<{
+  weekday: string;
+  calendarday: string;
+  fullcalendarday: string;
+  key: string;
+  class: string;
+  id: string;
+}> {
   const today = new Date();
   const weekday = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
   const dateKeyId = 'date-id-';
@@ -6,9 +13,16 @@ export default function getWeekdaysWithDates() {
   let dateId = 'ordinary-id';
   let keyIdCounter = 0;
 
-  const weekdaysWithDatesArray = [];
+  const weekdaysWithDatesArray: Array<{
+    weekday: string;
+    calendarday: string;
+    fullcalendarday: string;
+    key: string;
+    class: string;
+    id: string;
+  }> = [];
 
-  // We define interval for days displayed in the app.
+  // Define the interval for days displayed in the app.
   for (let i = -28; i <= 0; i += 1) {
     const currentDate = new Date(today.getTime() + i * 24 * 60 * 60 * 1000);
 

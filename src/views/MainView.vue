@@ -2,13 +2,13 @@
 import PiniaDisplay from '../components/PiniaDisplay.vue';
 import StatusDisplayContainer from '../components/StatusDisplayContainer.vue';
 import FoodsContainer from '../components/FoodsContainer.vue';
+import DaysBrowser from '../components/DaysBrowser.vue';
 import AddedFoodsContainer from '../components/AddedFoodsContainer.vue';
-import daysBrowser from '../components/daysBrowser.vue';
 </script>
 
 <template>
   <StatusDisplayContainer />
-  <daysBrowser />
+  <DaysBrowser />
   <AddedFoodsContainer />
   <FoodsContainer />
   <PiniaDisplay />
