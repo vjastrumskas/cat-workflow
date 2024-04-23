@@ -2,7 +2,14 @@
 import { ref } from 'vue';
 import getWeekdaysWithDates from './computePossibleDays.ts';
 
-const x = ref(getWeekdaysWithDates());
+const x: Array<{
+  weekday: string;
+  calendarday: string;
+  fullcalendarday: string;
+  key: string;
+  class: string;
+  id: string;
+}> = ref(getWeekdaysWithDates());
 </script>
 
 <template>
