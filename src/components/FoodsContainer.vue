@@ -16,9 +16,12 @@ import FoodItem from './FoodItem.vue';
   display: flex;
   flex-wrap: wrap;
   text-align: center;
-  min-height: 50px;
-  width: 300px;
+  align-content: center;
+  min-height: 60px;
+  width: 600px;
   background-color: white;
   margin-top: 10px;
+  border-radius: 15px;
+  padding: 10px;
 }
 </style>

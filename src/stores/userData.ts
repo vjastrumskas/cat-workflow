@@ -5,7 +5,6 @@ import { useRoute } from 'vue-router';
 interface User {
   name: string;
   goal: string;
-  consumedEnergy: string;
   weight: string;
   age: string;
   foods: {
@@ -27,14 +26,24 @@ interface User {
 // eslint-disable-next-line import/prefer-default-export
 export const useUserData = defineStore('user', () => {
   const user = ref<User>({
-    name: 'Anton',
-    goal: '2500',
-    consumedEnergy: '0',
+    name: '',
+    goal: '',
     weight: '',
     age: '',
     foods: [
       { food: 'kebab', added: false, portion: '100', baseEnergy: '700' },
       { food: 'morka', added: false, portion: '100', baseEnergy: '25' },
+      { food: 'alus', added: false, portion: '100', baseEnergy: '250' },
+      { food: 'gummies', added: false, portion: '100', baseEnergy: '250' },
+      {
+        food: 'karbonad schnitzel',
+        added: false,
+        portion: '100',
+        baseEnergy: '250',
+      },
+      { food: 'vodka', added: false, portion: '100', baseEnergy: '250' },
+      { food: 'tabaka', added: false, portion: '100', baseEnergy: '250' },
+      { food: 'android', added: false, portion: '100', baseEnergy: '250' },
     ],
     dates: [
       {

@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useUserData } from '../stores/userData.ts';
-import { setItem } from '../services/localStorage.ts';
+import { useModalActive } from '../stores/modalController.ts';
+
+import { setItem, getItem } from '../services/localStorage.ts';
 
 const minAge = 16;
 const maxAge = 120;
 
 const katinas = useUserData();
-const isActive = ref(true);
+const modal = useModalActive();
 const userName = ref('');
 const userWeight = ref('');
 const userAge = ref(String(minAge));
@@ -36,13 +38,46 @@ function submitForm() {
   katinas.changeWeight(userWeight.value);
   katinas.changeAge(userAge.value);
   katinas.changeGoal(calculateGoal(userWeight.value, userAge.value));
-  setItem('mealTracker', katinas.user);
-  isActive.value = false;
+  const existingData = getItem<{ [key: string]: any }>('mealTracker');
+  const combinedData = {
+    ...existingData, // Spread existing data
+    [katinas.user.name]: katinas.user, // Add Tadis data dynamically
+  };
+  setItem('mealTracker', combinedData);
+  modal.toggleModal();
 }
+
+function checkLocalStorageForKey(key: string) {
+  const value: { [key: string]: any } | null = getItem(key);
+  if (value !== null) {
+    // // The value exists in local storage.
+    // console.log('Value found:', (value as { name: string }).name);
+    const allKeys = Object.keys(value as Record<string, any>);
+
+    // Access the first object (in this case, "Vaidis")
+    const firstObjectName = allKeys[0];
+
+    const firstObject: { [key: string]: any } = value[firstObjectName];
+    console.log(firstObject);
+    katinas.changeName(firstObject.name);
+    katinas.changeWeight(firstObject.weight);
+    katinas.changeAge(firstObject.age);
+    katinas.changeGoal(calculateGoal(katinas.user.weight, katinas.user.age));
+  } else {
+    // The value does not exist in local storage.
+    console.log('Value not found or is null.');
+    modal.toggleModal();
+  }
+}
+
+// Call the function
+onMounted(() => {
+  checkLocalStorageForKey('mealTracker');
+});
 </script>
 
 <template>
-  <div class="modal" :style="{ display: isActive ? 'block' : 'none' }">
+  <div class="modal" :style="{ display: modal.isActive ? 'block' : 'none' }">
     <div class="modal-content">
       <form @submit.prevent="submitForm()">
         <div>
@@ -106,8 +141,8 @@ function submitForm() {
   margin: 5% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 60%; /* Could be more or less, depending on screen size */
-  height: 60%;
+  width: 200px; /* Could be more or less, depending on screen size */
+  height: 400px;
 }
 
 form {

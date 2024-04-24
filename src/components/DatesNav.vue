@@ -22,7 +22,7 @@ const obj = ref(getWeekdaysWithDates());
 
 <style>
 .box-middle-dates {
-  width: 300px;
+  width: 600px;
   display: flex;
   overflow-x: scroll;
   margin-bottom: 5px;
@@ -48,7 +48,8 @@ a {
 
 .date-box {
   background-color: white;
-  margin: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
   width: 70px;
   height: 70px;
   display: flex;

@@ -5,10 +5,14 @@ const katinas = useUserData();
 </script>
 
 <template>
-  <div v-for="(item, index) in katinas.user.foods" :key="'food' + index">
+  <div
+    v-for="(item, index) in katinas.user.foods"
+    class="item-food"
+    :key="'food' + index"
+  >
     <div
       @click="katinas.insertFood(item.food, $route.params.date)"
-      class="item-food"
+      class="inner-item-food"
     >
       {{ item.food }}
     </div>
@@ -17,11 +21,17 @@ const katinas = useUserData();
 
 <style scoped>
 .item-food {
-  padding: 10px;
-  background-color: white;
-  font-size: 0.75em;
+  margin: 5px;
+  cursor: pointer;
 }
-.item-food:hover {
-  background-color: rgb(247, 247, 247);
+.inner-item-food {
+  padding: 10px;
+  background-color: #646cff;
+  border-radius: 15px;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+.inner-item-food:hover {
+  background-color: #8288fd;
 }
 </style>
