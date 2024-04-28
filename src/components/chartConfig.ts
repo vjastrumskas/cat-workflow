@@ -7,7 +7,7 @@ export function data() {
     labels: [
       ['Base Goal', katinas.user.goal],
       ['Food', katinas.computeConsumedEnergy()],
-      ['Exercise', '26'],
+      ['Exercise', '560'],
     ],
     datasets: [
       {
@@ -21,7 +21,7 @@ export function data() {
             10
           ),
           katinas.computeConsumedEnergy(),
-          26,
+          560,
         ],
         borderRadius: 5,
         drawBorder: false,

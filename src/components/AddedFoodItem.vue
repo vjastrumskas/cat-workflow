@@ -24,7 +24,7 @@ const katinas = useUserData();
 
 <style scoped>
 .item-food {
-  margin: 5px;
+  margin: 15px;
 }
 .inner-item-food {
   padding: 5px;
@@ -40,7 +40,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #f9f9f9;
+  background-color: #f3f3f3;
   color: #213547;
 
   cursor: pointer;

@@ -15,6 +15,7 @@ const userWeight = ref('');
 const userAge = ref(String(minAge));
 const tabindex = ref(0);
 const open = ref(false);
+const userExists = ref(false);
 
 const options = ref(
   Array.from({ length: maxAge - minAge + 1 }, (_, i) => minAge + i)
@@ -34,17 +35,29 @@ function calculateGoal(weightInKg: string, ageInYears: string): string {
 }
 
 function submitForm() {
+  katinas.resetUserData();
   katinas.changeName(userName.value);
-  katinas.changeWeight(userWeight.value);
-  katinas.changeAge(userAge.value);
-  katinas.changeGoal(calculateGoal(userWeight.value, userAge.value));
-  const existingData = getItem<{ [key: string]: any }>('mealTracker');
-  const combinedData = {
-    ...existingData, // Spread existing data
-    [katinas.user.name]: katinas.user, // Add Tadis data dynamically
-  };
-  setItem('mealTracker', combinedData);
-  modal.toggleModal();
+  if (!userExists.value) {
+    katinas.changeWeight(userWeight.value);
+    katinas.changeAge(userAge.value);
+    katinas.changeGoal(calculateGoal(userWeight.value, userAge.value));
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+    const combinedData = {
+      ...existingData, // Spread existing data
+      [katinas.user.name]: katinas.user, // Add Tadis data dynamically
+    };
+    setItem('mealTracker', combinedData);
+    modal.toggleModal();
+  } else {
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+
+    katinas.changeWeight(existingData?.[userName.value]?.weight);
+    katinas.changeAge(existingData?.[userName.value]?.age);
+    katinas.changeFoods(existingData?.[userName.value]?.foods);
+    katinas.changeDates(existingData?.[userName.value]?.dates);
+    katinas.changeGoal(calculateGoal(katinas.user.weight, katinas.user.age));
+    modal.toggleModal();
+  }
 }
 
 function checkLocalStorageForKey(key: string) {
@@ -62,6 +75,9 @@ function checkLocalStorageForKey(key: string) {
     katinas.changeName(firstObject.name);
     katinas.changeWeight(firstObject.weight);
     katinas.changeAge(firstObject.age);
+    katinas.changeFoods(firstObject.foods);
+    katinas.changeDates(firstObject.dates);
+
     katinas.changeGoal(calculateGoal(katinas.user.weight, katinas.user.age));
   } else {
     // The value does not exist in local storage.
@@ -70,6 +86,22 @@ function checkLocalStorageForKey(key: string) {
   }
 }
 
+const checkForKeyMatch = () => {
+  const existingData = getItem<{ [key: string]: any }>('mealTracker');
+
+  // Check if the 'Artiom' key exists in the parsed data
+  if (existingData && existingData[userName.value]) {
+    console.log('Input matches Artiom');
+    userExists.value = true;
+    // Handle the case where the input matches "Artiom"
+    // You can access Artiom's data using parsedData.Artiom
+    // For example: const artiomName = parsedData.Artiom.name;
+  } else {
+    console.log('Input does not match Artiom');
+    // Handle other cases
+    userExists.value = false;
+  }
+};
 // Call the function
 onMounted(() => {
   checkLocalStorageForKey('mealTracker');
@@ -85,13 +117,17 @@ onMounted(() => {
         </div>
         <div>
           <label for="userName" style="display: none">User Name:</label>
-          <input v-model="userName" placeholder="What's your name?" />
+          <input
+            v-model="userName"
+            @input="checkForKeyMatch"
+            placeholder="What's your name?"
+          />
         </div>
-        <div>
+        <div v-if="!userExists">
           <label for="userWeight" style="display: none">User Weight:</label>
           <input v-model="userWeight" placeholder="Your weight" />
         </div>
-        <div class="options-select-menu">
+        <div v-if="!userExists" class="options-select-menu">
           <div class="custom-select" :tabindex="tabindex" @blur="open = false">
             <div class="selected" :class="{ open: open }" @click="open = !open">
               {{ userAge }}

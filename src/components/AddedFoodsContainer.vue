@@ -22,6 +22,5 @@ const katinas = useUserData();
   background-color: white;
   margin-top: 10px;
   border-radius: 15px;
-  padding: 10px;
 }
 </style>

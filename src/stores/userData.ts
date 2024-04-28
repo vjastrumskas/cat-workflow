@@ -1,10 +1,12 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useRoute } from 'vue-router';
+import { getItem, setItem } from '../services/localStorage.ts';
 
 interface User {
   name: string;
   goal: string;
+  stepsgoal: string;
   weight: string;
   age: string;
   foods: {
@@ -15,10 +17,12 @@ interface User {
   }[];
   dates: {
     date: string | string[];
+    steps: string;
     foods: {
       food: string;
       added: boolean;
       portion: string;
+      caloriesBurnt: string;
     }[];
   }[];
 }
@@ -28,29 +32,11 @@ export const useUserData = defineStore('user', () => {
   const user = ref<User>({
     name: '',
     goal: '',
+    stepsgoal: '10000',
     weight: '',
     age: '',
-    foods: [
-      { food: 'kebab', added: false, portion: '100', baseEnergy: '700' },
-      { food: 'morka', added: false, portion: '100', baseEnergy: '25' },
-      { food: 'alus', added: false, portion: '100', baseEnergy: '250' },
-      { food: 'gummies', added: false, portion: '100', baseEnergy: '250' },
-      {
-        food: 'karbonad schnitzel',
-        added: false,
-        portion: '100',
-        baseEnergy: '250',
-      },
-      { food: 'vodka', added: false, portion: '100', baseEnergy: '250' },
-      { food: 'tabaka', added: false, portion: '100', baseEnergy: '250' },
-      { food: 'android', added: false, portion: '100', baseEnergy: '250' },
-    ],
-    dates: [
-      {
-        date: '2024-04-23',
-        foods: [{ food: 'kebab', added: true, portion: '300' }],
-      },
-    ],
+    foods: [],
+    dates: [],
   });
   const changeName = (NewName: string): void => {
     user.value.name = NewName;
@@ -63,6 +49,12 @@ export const useUserData = defineStore('user', () => {
   };
   const changeGoal = (NewGoal: string): void => {
     user.value.goal = NewGoal;
+  };
+  const changeFoods = (NewFoods: User['foods']): void => {
+    user.value.foods.push(...NewFoods);
+  };
+  const changeDates = (NewDates: User['dates']): void => {
+    user.value.dates.push(...NewDates);
   };
   const incrementGoal = (): void => {
     const numericGoal = parseInt(user.value.goal, 10);
@@ -90,6 +82,12 @@ export const useUserData = defineStore('user', () => {
     } else {
       console.error(`Food item ${foodName} not found for date ${date}.`);
     }
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+    const combinedData = {
+      ...existingData, // Spread existing data
+      [user.value.name]: user.value, // Add Tadis data dynamically
+    };
+    setItem('mealTracker', combinedData);
   };
 
   const decrementPortion = (
@@ -117,6 +115,12 @@ export const useUserData = defineStore('user', () => {
         targetDate.foods[foodIndex].portion = newPortion.toString();
       }
     }
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+    const combinedData = {
+      ...existingData, // Spread existing data
+      [user.value.name]: user.value, // Add Tadis data dynamically
+    };
+    setItem('mealTracker', combinedData);
   };
 
   const isAdded = () => {
@@ -183,7 +187,12 @@ export const useUserData = defineStore('user', () => {
       const existingFood = targetDate.foods.find(f => f.food === food);
       if (!existingFood) {
         // If not found, add the new food item
-        targetDate.foods.push({ food, added: true, portion: '100' });
+        targetDate.foods.push({
+          food,
+          added: true,
+          portion: '100',
+          caloriesBurnt: '0',
+        });
       } else {
         console.log(`Food '${food}' already exists on ${date}.`);
       }
@@ -191,10 +200,16 @@ export const useUserData = defineStore('user', () => {
       // If the date doesn't exist, create a new entry
       user.value.dates.push({
         date,
-        foods: [{ food, added: true, portion: '100' }],
+        steps: '0',
+        foods: [{ food, added: true, portion: '100', caloriesBurnt: '0' }],
       });
     }
-    console.log(user);
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+    const combinedData = {
+      ...existingData, // Spread existing data
+      [user.value.name]: user.value, // Add Tadis data dynamically
+    };
+    setItem('mealTracker', combinedData);
   };
 
   const addFood = (food: string, baseEnergy: string) => {
@@ -206,6 +221,80 @@ export const useUserData = defineStore('user', () => {
     };
 
     user.value.foods.push(newFood);
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+    const combinedData = {
+      ...existingData, // Spread existing data
+      [user.value.name]: user.value, // Add Tadis data dynamically
+    };
+    setItem('mealTracker', combinedData);
+  };
+
+  const resetUserData = () => {
+    // Reset specific properties within the user object
+    user.value.name = '';
+    user.value.goal = '';
+    user.value.weight = '';
+    user.value.age = '';
+    user.value.foods = [];
+    user.value.dates = [];
+  };
+
+  const getStepsGoal = (): number => parseInt(user.value.stepsgoal, 10);
+
+  const getStepsCompleted = () => {
+    const route = useRoute();
+    const targetDate = route.params.date;
+    const targetFoods = user.value.dates.find(
+      date => date.date === targetDate
+    )?.steps;
+
+    if (!targetFoods) {
+      return 0; // Return an empty array if the target date is not found
+    }
+
+    return parseInt(targetFoods, 10);
+  };
+
+  const incrementSteps = (date: string | string[]): void => {
+    // Find the date object based on the provided date
+    const targetDate = user.value.dates.find(d => d.date === date);
+    if (!targetDate) {
+      console.error(`Date ${date} not found.`);
+      return;
+    }
+
+    // Find the specific food item within the date's foods array
+    const currentSteps = parseInt(targetDate.steps, 10);
+    const newSteps = currentSteps + 1000;
+    targetDate.steps = newSteps.toString();
+
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+    const combinedData = {
+      ...existingData, // Spread existing data
+      [user.value.name]: user.value, // Add Tadis data dynamically
+    };
+    setItem('mealTracker', combinedData);
+  };
+
+  const decrementSteps = (date: string | string[]): void => {
+    // Find the date object based on the provided date
+    const targetDate = user.value.dates.find(d => d.date === date);
+    if (!targetDate) {
+      console.error(`Date ${date} not found.`);
+      return;
+    }
+
+    // Find the specific food item within the date's foods array
+    const currentSteps = parseInt(targetDate.steps, 10);
+    const newSteps = currentSteps - 1000;
+    targetDate.steps = newSteps.toString();
+
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+    const combinedData = {
+      ...existingData, // Spread existing data
+      [user.value.name]: user.value, // Add Tadis data dynamically
+    };
+    setItem('mealTracker', combinedData);
   };
 
   return {
@@ -214,6 +303,8 @@ export const useUserData = defineStore('user', () => {
     changeWeight,
     changeAge,
     changeGoal,
+    changeFoods,
+    changeDates,
     incrementGoal,
     incrementPortion,
     decrementPortion,
@@ -223,5 +314,10 @@ export const useUserData = defineStore('user', () => {
     computeRemainder,
     insertFood,
     addFood,
+    resetUserData,
+    getStepsCompleted,
+    getStepsGoal,
+    incrementSteps,
+    decrementSteps,
   };
 });

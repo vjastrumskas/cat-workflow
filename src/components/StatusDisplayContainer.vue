@@ -17,6 +17,7 @@ const katinas = useUserData();
               katinas.computeConsumedEnergy()
             )
           }}
+          kcal
         </h5>
       </div>
     </div>

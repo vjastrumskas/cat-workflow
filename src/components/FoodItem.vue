@@ -21,7 +21,7 @@ const katinas = useUserData();
 
 <style scoped>
 .item-food {
-  margin: 5px;
+  margin: 15px 0 15px 15px;
   cursor: pointer;
 }
 .inner-item-food {

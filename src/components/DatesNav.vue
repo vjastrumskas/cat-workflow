@@ -3,10 +3,18 @@ import { ref } from 'vue';
 import getWeekdaysWithDates from './computePossibleDays.ts';
 
 const obj = ref(getWeekdaysWithDates());
+
+const scrollX = (e: WheelEvent) => {
+  const scrollContainer = document.querySelector('.box-middle-dates');
+  if (scrollContainer) {
+    scrollContainer.scrollLeft += e.deltaY;
+    e.preventDefault();
+  }
+};
 </script>
 
 <template>
-  <ul class="box-middle-dates">
+  <ul class="box-middle-dates" @mousewheel="scrollX">
     <router-link
       v-for="date in obj"
       :key="date.key"
@@ -25,20 +33,20 @@ const obj = ref(getWeekdaysWithDates());
   width: 600px;
   display: flex;
   overflow-x: scroll;
-  margin-bottom: 5px;
-  mask-image: linear-gradient(
+  overflow-y: hidden;
+  overflow: hidden;
+  /* mask-image: linear-gradient(
     to left,
     #00000030,
     black 20%,
     black 80%,
     #00000030 100%
-  );
+  ); */
 }
 
 ul.box-middle-dates {
   list-style: none;
   padding: 0;
-  margin-bottom: 5px;
 }
 
 a {
@@ -61,15 +69,15 @@ a {
 }
 
 .date-box:hover {
-  background-color: rgb(221 221 221);
+  background-color: rgb(230, 230, 230);
 }
 
 li.today-date {
   font-weight: bold;
-  border: 1px dotted gray;
+  border: 1px dotted #646cff;
 }
 
 a.router-link-active > li {
-  border: 1px solid gray;
+  border: 1px solid #646cff;
 }
 </style>
