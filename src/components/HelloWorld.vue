@@ -172,13 +172,12 @@ onMounted(() => {
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #d2dfea;
+  background-color: #ffffff;
   border-radius: 15px;
   margin: 5% auto; /* 15% from the top and centered */
   padding: 20px;
-  border: 1px solid #888;
   width: 200px; /* Could be more or less, depending on screen size */
-  height: 400px;
+  height: auto;
 }
 
 form {
@@ -279,5 +278,27 @@ input {
 
 .selectHide {
   display: none;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.4em 0.8em;
+  margin-left: 5px;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #f3f3f3;
+  color: #213547;
+
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
 }
 </style>

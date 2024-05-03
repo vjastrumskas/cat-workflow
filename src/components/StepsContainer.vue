@@ -2,7 +2,9 @@
 import StepsChart from './StepsChart.vue';
 import ShoeIcon from '../assets/ShoeIcon.vue';
 import { useUserData } from '../stores/userData.ts';
+import { useModalSettingsActive } from '../stores/modalSettingsController.ts';
 
+const katinass = useModalSettingsActive();
 const katinas = useUserData();
 </script>
 
@@ -13,12 +15,18 @@ const katinas = useUserData();
       <div class="icon-container">
         <ShoeIcon class="shoe-icon" />
       </div>
-      <div class="steps-completed">{{ katinas.getStepsCompleted() }}</div>
+      <div class="steps-completed">
+        {{ katinas.getStepsCompleted() }}
+        <!-- <span class="step-change-indicator">+1000</span> -->
+      </div>
     </div>
     <div class="goal-container">
       <div class="input-containter">
         <button @click="katinas.incrementSteps($route.params.date)">+</button>
         <button @click="katinas.decrementSteps($route.params.date)">-</button>
+        <button @click="katinass.toggleNewStepsIsActive()">Edit</button>
+
+        <button @click="katinas.zeroSteps($route.params.date)">Zero</button>
       </div>
     </div>
     <div class="innner-container-exercise-chart">
@@ -97,7 +105,8 @@ const katinas = useUserData();
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.4em 0.8em;
+  margin-left: 5px;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -113,5 +122,19 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+input {
+  box-sizing: border-box;
+  background-color: whitesmoke;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  color: #213547;
+  width: 80px;
+  margin-left: 5px;
 }
 </style>

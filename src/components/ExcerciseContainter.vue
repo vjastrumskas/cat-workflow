@@ -14,10 +14,18 @@ import CalorieContainer from './CalorieContainer.vue';
 .exercise-container {
   display: grid;
   grid-template-columns: 5fr 5fr;
-  gap: 2%;
   text-align: center;
   align-content: center;
-  min-height: 60px;
   border-radius: 15px;
+  gap: 2%;
+}
+
+@media screen and (max-width: 620px) {
+  .exercise-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 5fr 5fr;
+    gap: 0%;
+  }
 }
 </style>

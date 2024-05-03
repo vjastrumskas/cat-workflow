@@ -24,7 +24,8 @@ const katinas = useUserData();
 
 <style scoped>
 .item-food {
-  margin: 15px;
+  padding-top: 10px;
+  padding-left: 10px;
 }
 .inner-item-food {
   padding: 5px;
@@ -36,7 +37,8 @@ const katinas = useUserData();
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.4em 0.8em;
+
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;

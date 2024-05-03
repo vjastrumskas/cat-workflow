@@ -6,23 +6,30 @@ const newFood = ref('');
 const foodEnergy = ref('');
 
 const katinas = useUserData();
+
+const addFood = () => {
+  katinas.addFood(newFood.value, foodEnergy.value);
+  newFood.value = '';
+  foodEnergy.value = '';
+};
 </script>
 
 <template>
   <div>
-    <form @submit.prevent="katinas.addFood(newFood, foodEnergy)">
-      <div>
-        <p>You can add new foods here.</p>
-      </div>
+    <form @submit.prevent="addFood()">
       <div>
         <label for="newFood" style="display: none">User Name:</label>
-        <input v-model="newFood" placeholder="New food..." />
+        <input v-model="newFood" placeholder="New food..." tabindex="1" />
       </div>
       <div>
         <label for="foodEnergy" style="display: none">User Name:</label>
-        <input v-model="foodEnergy" placeholder="Kcal per 100g..." />
+        <input
+          v-model="foodEnergy"
+          placeholder="Kcal per 100g..."
+          tabindex="2"
+        />
+        <button type="submit" tabindex="3">Submit</button>
       </div>
-      <button type="submit">Submit</button>
     </form>
   </div>
 </template>
@@ -33,8 +40,7 @@ form {
 }
 
 form > div {
-  padding-bottom: 5px;
-  margin: 0 auto;
+  margin: 5px auto;
   width: 200px;
 }
 
@@ -75,7 +81,7 @@ button {
   font-family: inherit;
   background-color: #f9f9f9;
   color: #213547;
-
+  margin: 5px;
   cursor: pointer;
   transition: border-color 0.25s;
 }

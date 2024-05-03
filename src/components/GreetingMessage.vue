@@ -86,4 +86,12 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+@media screen and (max-width: 620px) {
+  .container-greetings {
+    width: 90vw;
+    min-width: 300px;
+    font-size: 0.75em;
+  }
+}
 </style>

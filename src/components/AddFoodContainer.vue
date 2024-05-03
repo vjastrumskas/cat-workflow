@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import AddedFoodItem from './AddedFoodItem.vue';
-import { useUserData } from '../stores/userData.ts';
+import AddFood from './AddFood.vue';
+// import { useUserData } from '../stores/userData.ts';
 
-const katinas = useUserData();
+// const katinas = useUserData();
 </script>
 
 <template>
-  <div v-if="katinas.isAdded().length" class="container-added-foods-main">
-    <div class="added-foods-title">Logged food: {{ $route.params.date }}</div>
-    <div class="container-added-foods-items">
-      <AddedFoodItem />
+  <div class="container-foods-main">
+    <div class="foods-title">You can add new food here.</div>
+    <div class="food-items">
+      <AddFood />
     </div>
   </div>
 </template>
 
 <style scoped>
-.container-added-foods-main {
+.container-foods-main {
   display: grid;
   grid-template-rows: 1fr auto;
   min-height: 60px;
@@ -26,20 +26,19 @@ const katinas = useUserData();
   justify-items: center;
 }
 
-.container-added-foods-items {
+.food-items {
   display: flex;
   flex-wrap: wrap;
   text-align: center;
-  align-content: center;
-  padding-bottom: 10px;
+  align-content: left;
 }
 
-.added-foods-title {
+.foods-title {
   display: flex;
   justify-content: left; /* Center horizontally */
   align-items: center; /* Center vertically */
   text-align: center; /* Additional horizontal centering */
-  width: 90%;
+  width: 95%;
   padding-bottom: 10px;
   padding-top: 10px;
   border-bottom: 1px solid rgb(234, 234, 234);
@@ -47,7 +46,7 @@ const katinas = useUserData();
 }
 
 @media screen and (max-width: 620px) {
-  .container-added-foods-main {
+  .container-foods-main {
     width: 90vw;
     min-width: 300px;
     font-size: 0.75em;

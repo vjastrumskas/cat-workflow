@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import SettingsContent from '../components/SettingsContent.vue';
+import AddFoodContainer from '../components/AddFoodContainer.vue';
+import FoodsContainer from '../components/FoodsContainer.vue';
 </script>
 
 <template>
-  <div class="container-settings">
-    Settings
-    <SettingsContent />
-  </div>
+  <AddFoodContainer />
+  <FoodsContainer />
+
+  <SettingsContent />
 </template>
 
 <style scoped>

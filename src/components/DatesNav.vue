@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import getWeekdaysWithDates from './computePossibleDays.ts';
 
 const obj = ref(getWeekdaysWithDates());
@@ -11,6 +11,17 @@ const scrollX = (e: WheelEvent) => {
     e.preventDefault();
   }
 };
+
+onMounted(() => {
+  const activeItem = document.querySelector('.router-link-active');
+  if (activeItem) {
+    activeItem.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'start',
+    });
+  }
+});
 </script>
 
 <template>
@@ -79,5 +90,12 @@ li.today-date {
 
 a.router-link-active > li {
   border: 1px solid #646cff;
+}
+
+@media screen and (max-width: 620px) {
+  .box-middle-dates {
+    width: 90vw;
+    min-width: 300px;
+  }
 }
 </style>

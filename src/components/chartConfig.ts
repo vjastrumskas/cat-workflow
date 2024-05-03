@@ -5,23 +5,24 @@ export function data() {
   const katinas = useUserData();
   return {
     labels: [
-      ['Base Goal', katinas.user.goal],
       ['Food', katinas.computeConsumedEnergy()],
-      ['Exercise', '560'],
+      ['Base Goal', katinas.user.goal],
+      ['Exercise', katinas.computeTotalCaloriesBurnt().toString()],
     ],
     datasets: [
       {
-        backgroundColor: ['#e1ecf5', '#7ec099', '#ffc400'],
+        backgroundColor: ['#7ec099', '#e1ecf5', '#ffc400'],
         data: [
+          katinas.computeConsumedEnergy(),
           parseInt(
             katinas.computeRemainder(
-              katinas.user.goal,
-              katinas.computeConsumedEnergy()
+              katinas.getGoal(),
+              katinas.computeConsumedEnergy(),
+              katinas.computeTotalCaloriesBurnt()
             ),
             10
           ),
-          katinas.computeConsumedEnergy(),
-          560,
+          katinas.computeTotalCaloriesBurnt(),
         ],
         borderRadius: 5,
         drawBorder: false,

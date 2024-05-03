@@ -21,7 +21,6 @@ const katinas = useUserData();
 
 <style scoped>
 .item-food {
-  margin: 15px 0 15px 15px;
   cursor: pointer;
 }
 .inner-item-food {
@@ -30,6 +29,8 @@ const katinas = useUserData();
   border-radius: 15px;
   color: white;
   transition: background-color 0.3s ease;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 .inner-item-food:hover {
   background-color: #8288fd;
