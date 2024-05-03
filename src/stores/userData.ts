@@ -11,7 +11,7 @@ interface User {
   age: string;
   foods: {
     food: string;
-    added: boolean;
+    favorite: boolean;
     portion: string;
     baseEnergy: string;
   }[];
@@ -56,6 +56,7 @@ export const useUserData = defineStore('user', () => {
   const changeDates = (NewDates: User['dates']): void => {
     user.value.dates.push(...NewDates);
   };
+
   const incrementGoal = (): void => {
     const numericGoal = parseInt(user.value.goal, 10);
     const incrementedGoal = (numericGoal + 1).toString();
@@ -139,7 +140,16 @@ export const useUserData = defineStore('user', () => {
     return targetFoods.filter(food => food.added);
   };
 
-  const notAdded = () => user.value.foods.filter(x => !x.added);
+  const getFavorite = (sortByFavorites: boolean) => {
+    if (sortByFavorites) {
+      // Filter and sort by favorites
+      return user.value.foods
+        .filter(x => x.favorite)
+        .concat(user.value.foods.filter(x => !x.favorite));
+    }
+    // Return the original array
+    return user.value.foods;
+  };
 
   const computeConsumedEnergy = (): number => {
     const route = useRoute();
@@ -218,7 +228,7 @@ export const useUserData = defineStore('user', () => {
   const addFood = (food: string, baseEnergy: string) => {
     const newFood = {
       food, // Replace with the actual food name
-      added: false, // Set to false initially
+      favorite: false, // Set to false initially
       portion: '100', // Specify the portion size (e.g., 150 grams)
       baseEnergy, // Specify the base energy (calories)
     };
@@ -514,8 +524,14 @@ export const useUserData = defineStore('user', () => {
     }
   };
 
+  const favoriteIsActive = ref(true);
+  const toggleFavoriteSort = () => {
+    favoriteIsActive.value = !favoriteIsActive.value;
+  };
+
   return {
     user,
+    favoriteIsActive,
     changeName,
     changeWeight,
     changeAge,
@@ -527,7 +543,7 @@ export const useUserData = defineStore('user', () => {
     incrementPortion,
     decrementPortion,
     isAdded,
-    notAdded,
+    getFavorite,
     computeConsumedEnergy,
     computeRemainder,
     insertFood,
@@ -548,5 +564,6 @@ export const useUserData = defineStore('user', () => {
     replaceAge,
     replaceGoal,
     insertDateTemplate,
+    toggleFavoriteSort,
   };
 });

@@ -8,7 +8,12 @@ const katinas = useUserData();
 
 <template>
   <div v-if="katinas.user.foods.length" class="container-foods-main">
-    <div class="foods-title">Available foods</div>
+    <div class="foods-title">
+      Available foods
+      <button @click="katinas.toggleFavoriteSort()">
+        Favorite {{ katinas.favoriteIsActive }}
+      </button>
+    </div>
     <div class="food-items">
       <FoodItem />
     </div>
@@ -81,6 +86,28 @@ const katinas = useUserData();
   justify-items: center;
   padding-bottom: 10px;
   font-size: 0.75em;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.4em 0.8em;
+  margin-left: 5px;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #f3f3f3;
+  color: #213547;
+
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
 }
 
 @media screen and (max-width: 620px) {
