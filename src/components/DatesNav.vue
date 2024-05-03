@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import getWeekdaysWithDates from './computePossibleDays.ts';
+import { useUserData } from '../stores/userData.ts';
 
 const obj = ref(getWeekdaysWithDates());
+const katinas = useUserData();
+const route = useRoute();
 
 const scrollX = (e: WheelEvent) => {
   const scrollContainer = document.querySelector('.box-middle-dates');
@@ -16,6 +20,7 @@ const scrollX = (e: WheelEvent) => {
 };
 
 onMounted(() => {
+  katinas.insertDateTemplate(route.params.date);
   const activeItem = document.querySelector('.router-link-active');
   if (activeItem) {
     activeItem.scrollIntoView({
@@ -24,6 +29,12 @@ onMounted(() => {
       inline: 'start',
     });
   }
+});
+
+watch(route, (newValue, oldValue) => {
+  console.log('Route changed:', newValue, oldValue);
+  katinas.insertDateTemplate(route.params.date);
+  // Perform your desired actions here...
 });
 </script>
 

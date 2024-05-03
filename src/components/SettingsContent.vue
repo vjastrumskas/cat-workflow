@@ -1,33 +1,10 @@
 <script setup lang="ts">
 import { useUserData } from '../stores/userData.ts';
-// import { setItem } from '../services/localStorage.ts';
 import { useModalSettingsActive } from '../stores/modalSettingsController.ts';
 
 const katinass = useModalSettingsActive();
 
 const katinas = useUserData();
-
-/**
-//  * Calculates estimated daily calorie needs based on age and weight.
-//  * @param {number} weightInKg - Weight in kilograms.
-//  * @param {number} ageInYears - Age in years.
-//  * @returns {number} Estimated daily calorie needs.
-//  */
-// function calculateGoal(weightInKg: string, ageInYears: string): string {
-//   // Basic approximation: Calories = Weight (kg) × 24 + Age (years) × 3.5
-//   const calories =
-//     parseInt(weightInKg, 10) * 24 + parseInt(ageInYears, 10) * 3.5;
-//   return calories.toString();
-// }
-
-// function submitForm() {
-//   katinas.changeName(userName.value);
-//   katinas.changeWeight(userWeight.value);
-//   katinas.changeAge(userAge.value);
-//   katinas.changeGoal(calculateGoal(userWeight.value, userAge.value));
-//   setItem('mealTracker', katinas.user);
-//   isActive.value = false;
-// }
 </script>
 
 <template>
@@ -37,9 +14,6 @@ const katinas = useUserData();
       <div class="name-container-settings">
         <div class="name-settings">Current name: {{ katinas.user.name }}</div>
         <div>
-          <!-- <label for="userName" style="display: none">User Name:</label>
-          <input v-model="userName" placeholder="Change name..." /> -->
-          <!-- <button @click="katinas.replaceName('sabaka')">Test</button> -->
           <button @click="katinass.toggleReplaceNameIsActive()">Edit</button>
         </div>
       </div>
@@ -48,8 +22,6 @@ const katinas = useUserData();
           Current weight: {{ katinas.user.weight }}
         </div>
         <div>
-          <!-- <label for="userWeight" style="display: none">User Weight:</label>
-          <input v-model="userWeight" placeholder="Change weight" /> -->
           <button @click="katinass.toggleReplaceWeightIsActive()">Edit</button>
         </div>
       </div>
@@ -64,8 +36,7 @@ const katinas = useUserData();
           Current calorie goal: {{ katinas.user.goal }}
         </div>
         <div>
-          <button @click="katinass.toggleReplaceAgeIsActive()">Edit</button>
-          <!-- <button @click="katinas.incrementGoal()">Increment Goal</button> -->
+          <button @click="katinass.toggleReplaceGoalIsActive()">Edit</button>
         </div>
       </div>
       <div>
@@ -111,9 +82,9 @@ input {
 
 .disclaimer-settings {
   display: flex;
-  justify-content: left; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  text-align: center; /* Additional horizontal centering */
+  justify-content: left;
+  align-items: center;
+  text-align: center;
   width: 95%;
   padding-bottom: 10px;
   padding-top: 10px;
@@ -127,7 +98,7 @@ input {
 .age-container-settings,
 .goal-container-settings {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
 }
 
 .name-settings,
@@ -159,5 +130,13 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media screen and (max-width: 620px) {
+  .content-settings {
+    width: 90vw;
+    min-width: 300px;
+    font-size: 0.6em;
+  }
 }
 </style>

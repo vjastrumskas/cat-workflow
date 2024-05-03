@@ -203,7 +203,7 @@ export const useUserData = defineStore('user', () => {
       user.value.dates.push({
         date,
         steps: '0',
-        caloriesBurnt: '550',
+        caloriesBurnt: '0',
         foods: [{ food, added: true, portion: '100' }],
       });
     }
@@ -247,6 +247,7 @@ export const useUserData = defineStore('user', () => {
   const getStepsCompleted = () => {
     const route = useRoute();
     const targetDate = route.params.date;
+
     const targetFoods = user.value.dates.find(
       date => date.date === targetDate
     )?.steps;
@@ -259,22 +260,20 @@ export const useUserData = defineStore('user', () => {
   };
 
   const incrementSteps = (date: string | string[]): void => {
-    // Find the date object based on the provided date
     const targetDate = user.value.dates.find(d => d.date === date);
     if (!targetDate) {
       console.error(`Date ${date} not found.`);
       return;
     }
 
-    // Find the specific food item within the date's foods array
     const currentSteps = parseInt(targetDate.steps, 10);
     const newSteps = currentSteps + 1000;
     targetDate.steps = newSteps.toString();
 
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
     const combinedData = {
-      ...existingData, // Spread existing data
-      [user.value.name]: user.value, // Add Tadis data dynamically
+      ...existingData,
+      [user.value.name]: user.value,
     };
     setItem('mealTracker', combinedData);
   };
@@ -486,6 +485,35 @@ export const useUserData = defineStore('user', () => {
     setItem('mealTracker', combinedData);
   };
 
+  const replaceGoal = (newGoal: string): void => {
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+    if (!existingData) {
+      return;
+    }
+
+    changeGoal(newGoal);
+    const combinedData = {
+      ...existingData, // Spread existing data
+      // [user.value.name]: user.value, // Add Tadis data dynamically with the new key
+      [user.value.name]: user.value, // Add Tadis data dynamically with the new key
+    };
+    setItem('mealTracker', combinedData);
+  };
+
+  const insertDateTemplate = (date: string | string[]): void => {
+    const targetDate = user.value.dates.find(d => d.date === date);
+
+    if (!targetDate) {
+      // If the date doesn't exist, create a new entry
+      user.value.dates.push({
+        date,
+        steps: '0',
+        caloriesBurnt: '0',
+        foods: [],
+      });
+    }
+  };
+
   return {
     user,
     changeName,
@@ -518,5 +546,7 @@ export const useUserData = defineStore('user', () => {
     replaceName,
     replaceWeight,
     replaceAge,
+    replaceGoal,
+    insertDateTemplate,
   };
 });

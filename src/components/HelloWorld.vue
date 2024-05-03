@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+
 import { useUserData } from '../stores/userData.ts';
 import { useModalActive } from '../stores/modalController.ts';
 
@@ -7,6 +9,7 @@ import { setItem, getItem } from '../services/localStorage.ts';
 
 const minAge = 16;
 const maxAge = 120;
+const route = useRoute();
 
 const katinas = useUserData();
 const modal = useModalActive();
@@ -47,6 +50,8 @@ function submitForm() {
       [katinas.user.name]: katinas.user, // Add Tadis data dynamically
     };
     setItem('mealTracker', combinedData);
+    katinas.insertDateTemplate(route.params.date);
+
     modal.toggleModal();
   } else {
     const existingData = getItem<{ [key: string]: any }>('mealTracker');

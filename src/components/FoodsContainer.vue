@@ -42,6 +42,16 @@ const katinas = useUserData();
   flex-wrap: wrap;
   text-align: center;
   align-content: left;
+  overflow-y: scroll;
+  max-height: 500px;
+}
+
+.food-items::-webkit-scrollbar {
+  display: none;
+}
+
+.food-items {
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 .foods-title {

@@ -32,6 +32,16 @@ const katinas = useUserData();
   text-align: center;
   align-content: center;
   padding-bottom: 10px;
+  overflow-y: scroll;
+  max-height: 400px;
+}
+
+.container-added-foods-items::-webkit-scrollbar {
+  display: none;
+}
+
+.container-added-foods-items {
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 .added-foods-title {

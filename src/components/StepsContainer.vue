@@ -31,7 +31,9 @@ const katinas = useUserData();
     </div>
     <div class="innner-container-exercise-chart">
       <div class="goal-statement">Goal: 10000 steps</div>
-      <StepsChart />
+      <div class="steps-chart-container">
+        <StepsChart />
+      </div>
     </div>
   </div>
 </template>
@@ -48,10 +50,17 @@ const katinas = useUserData();
 }
 
 .innner-container-exercise-chart {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
   height: 30px;
   width: 260px;
   padding-left: 15px;
   padding-right: 15px;
+}
+
+.steps-chart-container {
+  height: 30px;
+  width: 260px;
 }
 
 .icon-container {

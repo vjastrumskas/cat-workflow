@@ -13,6 +13,7 @@ const calories = ref('');
 const userName = ref('');
 const weight = ref('');
 const age = ref('');
+const goal = ref('');
 const route = useRoute();
 
 const handleEscKey = (event: any) => {
@@ -53,11 +54,15 @@ const submitForm = (trigger: String) => {
   } else if (trigger === 'replaceWeight') {
     user.replaceWeight(weight.value);
     katinas.toggleReplaceWeightIsActive();
-    userName.value = '';
+    weight.value = '';
   } else if (trigger === 'replaceAge') {
     user.replaceAge(age.value);
     katinas.toggleReplaceAgeIsActive();
-    userName.value = '';
+    age.value = '';
+  } else if (trigger === 'replaceGoal') {
+    user.replaceGoal(goal.value);
+    katinas.toggleReplaceGoalIsActive();
+    goal.value = '';
   }
 };
 </script>
@@ -205,6 +210,36 @@ const submitForm = (trigger: String) => {
             />
           </div>
           <div class="note-message">* Note this will change your age only.</div>
+          <div>
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal"
+    :style="{ display: katinas.replaceGoalIsActive ? 'block' : 'none' }"
+  >
+    <div class="modal-container">
+      <div class="exit-button">
+        <CloseVector @click="katinas.toggleReplaceGoalIsActive()" />
+      </div>
+      <div class="modal-content">
+        <form @submit.prevent="submitForm('replaceGoal')">
+          <div>Edit goal:</div>
+          <div>
+            <label for="replaceName" style="display: none">Edit goal:</label>
+            <input
+              id="replaceName"
+              v-model="goal"
+              placeholder="Type in name..."
+            />
+          </div>
+          <div class="note-message">
+            * Note this will change your goal only.
+          </div>
           <div>
             <button type="submit">Submit</button>
           </div>
