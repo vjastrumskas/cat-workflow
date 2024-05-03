@@ -47,6 +47,9 @@ onMounted(() => {
   width: 600px;
   display: flex;
   overflow-x: scroll;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
   /* overflow-y: hidden; */
   /* overflow: hidden; */
   /* mask-image: linear-gradient(
@@ -56,6 +59,14 @@ onMounted(() => {
     black 80%,
     #00000030 100%
   ); */
+}
+
+.box-middle-dates::-webkit-scrollbar {
+  display: none;
+}
+
+.box-middle-dates {
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 ul.box-middle-dates {
