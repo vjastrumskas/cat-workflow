@@ -7,8 +7,11 @@ const obj = ref(getWeekdaysWithDates());
 const scrollX = (e: WheelEvent) => {
   const scrollContainer = document.querySelector('.box-middle-dates');
   if (scrollContainer) {
-    scrollContainer.scrollLeft += e.deltaY;
-    e.preventDefault();
+    // Check if the event is triggered by a mousewheel
+    if (e.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
+      scrollContainer.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
   }
 };
 
@@ -25,7 +28,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <ul class="box-middle-dates" @mousewheel="scrollX">
+  <ul class="box-middle-dates" @wheel="scrollX">
     <router-link
       v-for="date in obj"
       :key="date.key"
@@ -44,8 +47,8 @@ onMounted(() => {
   width: 600px;
   display: flex;
   overflow-x: scroll;
-  overflow-y: hidden;
-  overflow: hidden;
+  /* overflow-y: hidden; */
+  /* overflow: hidden; */
   /* mask-image: linear-gradient(
     to left,
     #00000030,
