@@ -14,6 +14,8 @@ const userName = ref('');
 const weight = ref('');
 const age = ref('');
 const goal = ref('');
+const editFoodName = ref('');
+// const editCalores = ref('');
 const route = useRoute();
 
 const handleEscKey = (event: any) => {
@@ -27,6 +29,10 @@ const handleEscKey = (event: any) => {
     katinas.toggleReplaceWeightIsActive();
   } else if (event.key === 'Escape' && katinas.replaceAgeIsActive) {
     katinas.toggleReplaceAgeIsActive();
+  } else if (event.key === 'Escape' && katinas.replaceGoalIsActive) {
+    katinas.toggleReplaceGoalIsActive();
+  } else if (event.key === 'Escape' && katinas.editFoodItem) {
+    katinas.toggleEditFoodItem();
   }
 };
 
@@ -63,6 +69,10 @@ const submitForm = (trigger: String) => {
     user.replaceGoal(goal.value);
     katinas.toggleReplaceGoalIsActive();
     goal.value = '';
+  } else if (trigger === 'editFood') {
+    user.changeFoodName(katinas.oldFoodName, editFoodName.value);
+    katinas.toggleEditFoodItem();
+    editFoodName.value = '';
   }
 };
 </script>
@@ -230,9 +240,9 @@ const submitForm = (trigger: String) => {
         <form @submit.prevent="submitForm('replaceGoal')">
           <div>Edit goal:</div>
           <div>
-            <label for="replaceName" style="display: none">Edit goal:</label>
+            <label for="replaceGoal" style="display: none">Edit goal:</label>
             <input
-              id="replaceName"
+              id="replaceGoal"
               v-model="goal"
               placeholder="Type in name..."
             />
@@ -240,6 +250,51 @@ const submitForm = (trigger: String) => {
           <div class="note-message">
             * Note this will change your goal only.
           </div>
+          <div>
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal"
+    :style="{ display: katinas.editFoodItem ? 'block' : 'none' }"
+  >
+    <div class="modal-container">
+      <div class="exit-button">
+        <CloseVector @click="katinas.toggleEditFoodItem()" />
+      </div>
+      <div class="modal-content">
+        <form @submit.prevent="submitForm('editFood')">
+          <div>Edit {{ katinas.oldFoodName }}:</div>
+          <div>
+            <label for="editFoodName" style="display: none"
+              >Edit food name:</label
+            >
+            <input
+              id="editFoodName"
+              v-model="editFoodName"
+              placeholder="Type in new name..."
+            />
+          </div>
+          <div class="note-message">
+            * Note this will affect food names of your previous entries.
+          </div>
+          <!-- <div> -->
+          <!-- <label for="editFoodCalories" style="display: none"
+              >Edit food calories:</label
+            >
+            <input
+              id="editFoodCalories"
+              v-model="editCalores"
+              placeholder="Type in calories..."
+            />
+          </div>
+          <div class="note-message">
+            * Note this will change your food calories.
+          </div> -->
           <div>
             <button type="submit">Submit</button>
           </div>

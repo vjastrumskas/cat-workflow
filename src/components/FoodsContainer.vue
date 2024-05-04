@@ -10,8 +10,14 @@ const katinas = useUserData();
   <div v-if="katinas.user.foods.length" class="container-foods-main">
     <div class="foods-title">
       Available foods
-      <button @click="katinas.toggleFavoriteSort()">
-        Favorite {{ katinas.favoriteIsActive }}
+      <button
+        @click="katinas.toggleFavoriteSort()"
+        :style="{
+          backgroundColor: katinas.favoriteIsActive ? '#646cff' : '',
+          color: katinas.favoriteIsActive ? 'white' : '',
+        }"
+      >
+        Favorite
       </button>
     </div>
     <div class="food-items">
@@ -43,10 +49,6 @@ const katinas = useUserData();
 }
 
 .food-items {
-  display: flex;
-  flex-wrap: wrap;
-  text-align: center;
-  align-content: left;
   overflow-y: scroll;
   max-height: 500px;
 }

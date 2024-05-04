@@ -2,9 +2,8 @@
 import { useUserData } from '../stores/userData.ts';
 import { useModalSettingsActive } from '../stores/modalSettingsController.ts';
 
-const katinass = useModalSettingsActive();
-
 const katinas = useUserData();
+const katinass = useModalSettingsActive();
 </script>
 
 <template>

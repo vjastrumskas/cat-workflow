@@ -9,6 +9,9 @@ export const useModalSettingsActive = defineStore('modalSettings', () => {
   const replaceWeightIsActive = ref(false);
   const replaceAgeIsActive = ref(false);
   const replaceGoalIsActive = ref(false);
+  const youAreAtSettings = ref(false);
+  const editFoodItem = ref(false);
+  const oldFoodName = ref('');
 
   const toggleNewStepsIsActive = () => {
     newStepsIsActive.value = !newStepsIsActive.value;
@@ -28,6 +31,14 @@ export const useModalSettingsActive = defineStore('modalSettings', () => {
   const toggleReplaceGoalIsActive = () => {
     replaceGoalIsActive.value = !replaceGoalIsActive.value;
   };
+  const toggleYouAreAtSettings = () => {
+    youAreAtSettings.value = !youAreAtSettings.value;
+  };
+  const getyouAreAtSettings = () => youAreAtSettings.value;
+  const toggleEditFoodItem = () => {
+    editFoodItem.value = !editFoodItem.value;
+  };
+
   return {
     newStepsIsActive,
     newCaloriesIsActive,
@@ -35,11 +46,17 @@ export const useModalSettingsActive = defineStore('modalSettings', () => {
     replaceWeightIsActive,
     replaceAgeIsActive,
     replaceGoalIsActive,
+    youAreAtSettings,
+    editFoodItem,
+    oldFoodName,
     toggleNewStepsIsActive,
     toggleNewCaloriesIsActive,
     toggleReplaceNameIsActive,
     toggleReplaceAgeIsActive,
     toggleReplaceWeightIsActive,
     toggleReplaceGoalIsActive,
+    toggleYouAreAtSettings,
+    getyouAreAtSettings,
+    toggleEditFoodItem,
   };
 });

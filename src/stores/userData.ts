@@ -529,6 +529,49 @@ export const useUserData = defineStore('user', () => {
     favoriteIsActive.value = !favoriteIsActive.value;
   };
 
+  const changeFoodName = (oldFoodName: string, newFoodName: string) => {
+    const horseIndex = user.value.foods.findIndex(
+      foodEntry => foodEntry.food === oldFoodName
+    );
+
+    if (horseIndex !== -1) {
+      const existingData = getItem<{ [key: string]: any }>('mealTracker');
+      if (!existingData) {
+        return;
+      }
+
+      // Change main food name
+      user.value.foods[horseIndex].food = newFoodName;
+
+      // Change food names in dates
+      const updatedDates = user.value.dates.map(dateObj => {
+        const updatedFoods = dateObj.foods.map(food => {
+          if (food.food === oldFoodName) {
+            return { ...food, food: newFoodName };
+          }
+          return food;
+        });
+        return { ...dateObj, foods: updatedFoods };
+      });
+
+      // Update Pinia
+      user.value.dates = user.value.dates.map(dateObj => {
+        const matchingUpdatedDate = updatedDates.find(
+          updatedDate => updatedDate.date === dateObj.date
+        );
+
+        return matchingUpdatedDate || dateObj;
+      });
+
+      const combinedData = {
+        ...existingData,
+
+        [user.value.name]: user.value,
+      };
+      setItem('mealTracker', combinedData);
+    }
+  };
+
   return {
     user,
     favoriteIsActive,
@@ -565,5 +608,6 @@ export const useUserData = defineStore('user', () => {
     replaceGoal,
     insertDateTemplate,
     toggleFavoriteSort,
+    changeFoodName,
   };
 });
