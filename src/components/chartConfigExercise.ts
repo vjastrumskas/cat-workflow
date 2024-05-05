@@ -1,20 +1,20 @@
 import { useUserData } from '../stores/userData.ts';
 
 export function data() {
-  const katinas = useUserData();
+  const user = useUserData();
   return {
-    labels: ['vaidis'],
+    labels: ['goal'],
     datasets: [
       {
         backgroundColor: ['#ffc400'],
-        data: [katinas.getStepsCompleted()],
+        data: [user.getStepsCompleted()],
         barPercentage: 0.3,
         barThickness: 10,
         borderRadius: 10,
       },
       {
         backgroundColor: ['#e1ecf5'],
-        data: [katinas.getStepsGoal() - katinas.getStepsCompleted()],
+        data: [user.getStepsGoal() - user.getStepsCompleted()],
         barPercentage: 0.3,
         barThickness: 10,
         borderRadius: 10,

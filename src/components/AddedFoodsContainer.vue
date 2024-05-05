@@ -2,11 +2,11 @@
 import AddedFoodItem from './AddedFoodItem.vue';
 import { useUserData } from '../stores/userData.ts';
 
-const katinas = useUserData();
+const user = useUserData();
 </script>
 
 <template>
-  <div v-if="katinas.isAdded().length" class="container-added-foods-main">
+  <div v-if="user.isAdded().length" class="container-added-foods-main">
     <div class="added-foods-title">Logged food: {{ $route.params.date }}</div>
     <div class="container-added-foods-items">
       <AddedFoodItem />

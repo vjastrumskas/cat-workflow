@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import AddFood from './AddFood.vue';
-// import { useUserData } from '../stores/userData.ts';
-
-// const katinas = useUserData();
 </script>
 
 <template>
@@ -35,9 +32,9 @@ import AddFood from './AddFood.vue';
 
 .foods-title {
   display: flex;
-  justify-content: left; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  text-align: center; /* Additional horizontal centering */
+  justify-content: left;
+  align-items: center;
+  text-align: center;
   width: 95%;
   padding-bottom: 10px;
   padding-top: 10px;

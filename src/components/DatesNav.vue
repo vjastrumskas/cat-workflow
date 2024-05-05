@@ -4,10 +4,11 @@ import { useRoute } from 'vue-router';
 import getWeekdaysWithDates from './computePossibleDays.ts';
 import { useUserData } from '../stores/userData.ts';
 
-const obj = ref(getWeekdaysWithDates());
-const katinas = useUserData();
+const datesObject = ref(getWeekdaysWithDates());
+const user = useUserData();
 const route = useRoute();
 
+// This makes sure that we scroll dates horizontally with mousewheel
 const scrollX = (e: WheelEvent) => {
   const scrollContainer = document.querySelector('.box-middle-dates');
   if (scrollContainer) {
@@ -20,7 +21,7 @@ const scrollX = (e: WheelEvent) => {
 };
 
 onMounted(() => {
-  katinas.insertDateTemplate(route.params.date);
+  user.insertDateTemplate(route.params.date);
   const activeItem = document.querySelector('.router-link-active');
   if (activeItem) {
     activeItem.scrollIntoView({
@@ -31,17 +32,16 @@ onMounted(() => {
   }
 });
 
-watch(route, (newValue, oldValue) => {
-  console.log('Route changed:', newValue, oldValue);
-  katinas.insertDateTemplate(route.params.date);
-  // Perform your desired actions here...
+// Insert empty date template when visiting a route
+watch(route, () => {
+  user.insertDateTemplate(route.params.date);
 });
 </script>
 
 <template>
   <ul class="box-middle-dates" @wheel="scrollX">
     <router-link
-      v-for="date in obj"
+      v-for="date in datesObject"
       :key="date.key"
       :to="`/date/${date.fullcalendarday}`"
     >
@@ -60,16 +60,6 @@ watch(route, (newValue, oldValue) => {
   overflow-x: scroll;
   margin-top: 10px;
   margin-bottom: 10px;
-
-  /* overflow-y: hidden; */
-  /* overflow: hidden; */
-  /* mask-image: linear-gradient(
-    to left,
-    #00000030,
-    black 20%,
-    black 80%,
-    #00000030 100%
-  ); */
 }
 
 .box-middle-dates::-webkit-scrollbar {
@@ -77,7 +67,7 @@ watch(route, (newValue, oldValue) => {
 }
 
 .box-middle-dates {
-  -ms-overflow-style: none; /* IE and Edge */
+  -ms-overflow-style: none; /* User for IE and Edge */
 }
 
 ul.box-middle-dates {

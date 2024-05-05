@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { useUserData } from '../stores/userData.ts';
 
-const katinas = useUserData();
+const user = useUserData();
 </script>
 
 <template>
   <div
     class="item-food"
-    v-for="(item, index) in katinas.isAdded()"
+    v-for="(item, index) in user.isAdded()"
     :key="'addedFood' + index"
   >
     <div class="innter-item-food">
-      <button @click="katinas.incrementPortion(item.food, $route.params.date)">
+      <button @click="user.incrementPortion(item.food, $route.params.date)">
         +
       </button>
       {{ item.food }} {{ item.portion }}g
-      <button @click="katinas.decrementPortion(item.food, $route.params.date)">
+      <button @click="user.decrementPortion(item.food, $route.params.date)">
         -
       </button>
     </div>

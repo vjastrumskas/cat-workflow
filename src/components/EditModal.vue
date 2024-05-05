@@ -6,7 +6,7 @@ import { useUserData } from '../stores/userData.ts';
 
 import CloseVector from '../assets/CloseVector.vue';
 
-const katinas = useModalSettingsActive();
+const modalController = useModalSettingsActive();
 const user = useUserData();
 const steps = ref('');
 const calories = ref('');
@@ -20,20 +20,20 @@ const confirmedDeletion = ref(false);
 const route = useRoute();
 
 const handleEscKey = (event: any) => {
-  if (event.key === 'Escape' && katinas.newStepsIsActive) {
-    katinas.toggleNewStepsIsActive();
-  } else if (event.key === 'Escape' && katinas.newCaloriesIsActive) {
-    katinas.toggleNewCaloriesIsActive();
-  } else if (event.key === 'Escape' && katinas.replaceNameIsActive) {
-    katinas.toggleReplaceNameIsActive();
-  } else if (event.key === 'Escape' && katinas.replaceWeightIsActive) {
-    katinas.toggleReplaceWeightIsActive();
-  } else if (event.key === 'Escape' && katinas.replaceAgeIsActive) {
-    katinas.toggleReplaceAgeIsActive();
-  } else if (event.key === 'Escape' && katinas.replaceGoalIsActive) {
-    katinas.toggleReplaceGoalIsActive();
-  } else if (event.key === 'Escape' && katinas.editFoodItem) {
-    katinas.toggleEditFoodItem();
+  if (event.key === 'Escape' && modalController.newStepsIsActive) {
+    modalController.toggleNewStepsIsActive();
+  } else if (event.key === 'Escape' && modalController.newCaloriesIsActive) {
+    modalController.toggleNewCaloriesIsActive();
+  } else if (event.key === 'Escape' && modalController.replaceNameIsActive) {
+    modalController.toggleReplaceNameIsActive();
+  } else if (event.key === 'Escape' && modalController.replaceWeightIsActive) {
+    modalController.toggleReplaceWeightIsActive();
+  } else if (event.key === 'Escape' && modalController.replaceAgeIsActive) {
+    modalController.toggleReplaceAgeIsActive();
+  } else if (event.key === 'Escape' && modalController.replaceGoalIsActive) {
+    modalController.toggleReplaceGoalIsActive();
+  } else if (event.key === 'Escape' && modalController.editFoodItem) {
+    modalController.toggleEditFoodItem();
   }
 };
 
@@ -48,43 +48,41 @@ onUnmounted(() => {
 const submitForm = (trigger: String) => {
   if (trigger === 'newSteps') {
     user.changeSteps(route.params.date, steps.value);
-    katinas.toggleNewStepsIsActive();
+    modalController.toggleNewStepsIsActive();
     steps.value = '';
   } else if (trigger === 'specific') {
     user.updateCalories(route.params.date, 'specific', calories.value);
-    katinas.toggleNewCaloriesIsActive();
+    modalController.toggleNewCaloriesIsActive();
     calories.value = '';
   } else if (trigger === 'replaceName') {
     user.replaceName(userName.value);
-    katinas.toggleReplaceNameIsActive();
+    modalController.toggleReplaceNameIsActive();
     userName.value = '';
   } else if (trigger === 'replaceWeight') {
     user.replaceWeight(weight.value);
-    katinas.toggleReplaceWeightIsActive();
+    modalController.toggleReplaceWeightIsActive();
     weight.value = '';
   } else if (trigger === 'replaceAge') {
     user.replaceAge(age.value);
-    katinas.toggleReplaceAgeIsActive();
+    modalController.toggleReplaceAgeIsActive();
     age.value = '';
   } else if (trigger === 'replaceGoal') {
     user.replaceGoal(goal.value);
-    katinas.toggleReplaceGoalIsActive();
+    modalController.toggleReplaceGoalIsActive();
     goal.value = '';
   } else if (trigger === 'editFood') {
     if (confirmedDeletion.value) {
-      user.deleteFoodByName(katinas.oldFoodName);
-      katinas.toggleEditFoodItem();
+      user.deleteFoodByName(modalController.oldFoodName);
+      modalController.toggleEditFoodItem();
       editFoodName.value = '';
       editCalories.value = '';
-      console.log('deleted');
     } else {
-      user.changeCalories(katinas.oldFoodName, editCalories.value);
-      user.changeFoodName(katinas.oldFoodName, editFoodName.value);
-      katinas.toggleEditFoodItem();
+      user.changeCalories(modalController.oldFoodName, editCalories.value);
+      user.changeFoodName(modalController.oldFoodName, editFoodName.value);
+      modalController.toggleEditFoodItem();
       editFoodName.value = '';
       editCalories.value = '';
-      console.log('edited');
-      console.log(confirmedDeletion.value);
+      confirmedDeletion.value = false;
     }
   }
 };
@@ -93,11 +91,11 @@ const submitForm = (trigger: String) => {
 <template>
   <div
     class="modal"
-    :style="{ display: katinas.newStepsIsActive ? 'block' : 'none' }"
+    :style="{ display: modalController.newStepsIsActive ? 'block' : 'none' }"
   >
     <div class="modal-container">
       <div class="exit-button">
-        <CloseVector @click="katinas.toggleNewStepsIsActive()" />
+        <CloseVector @click="modalController.toggleNewStepsIsActive()" />
       </div>
       <div class="modal-content">
         <form @submit.prevent="submitForm('newSteps')">
@@ -123,11 +121,11 @@ const submitForm = (trigger: String) => {
 
   <div
     class="modal"
-    :style="{ display: katinas.newCaloriesIsActive ? 'block' : 'none' }"
+    :style="{ display: modalController.newCaloriesIsActive ? 'block' : 'none' }"
   >
     <div class="modal-container">
       <div class="exit-button">
-        <CloseVector @click="katinas.toggleNewCaloriesIsActive()" />
+        <CloseVector @click="modalController.toggleNewCaloriesIsActive()" />
       </div>
       <div class="modal-content">
         <form @submit.prevent="submitForm('specific')">
@@ -155,11 +153,11 @@ const submitForm = (trigger: String) => {
 
   <div
     class="modal"
-    :style="{ display: katinas.replaceNameIsActive ? 'block' : 'none' }"
+    :style="{ display: modalController.replaceNameIsActive ? 'block' : 'none' }"
   >
     <div class="modal-container">
       <div class="exit-button">
-        <CloseVector @click="katinas.toggleReplaceNameIsActive()" />
+        <CloseVector @click="modalController.toggleReplaceNameIsActive()" />
       </div>
       <div class="modal-content">
         <form @submit.prevent="submitForm('replaceName')">
@@ -185,11 +183,13 @@ const submitForm = (trigger: String) => {
 
   <div
     class="modal"
-    :style="{ display: katinas.replaceWeightIsActive ? 'block' : 'none' }"
+    :style="{
+      display: modalController.replaceWeightIsActive ? 'block' : 'none',
+    }"
   >
     <div class="modal-container">
       <div class="exit-button">
-        <CloseVector @click="katinas.toggleReplaceWeightIsActive()" />
+        <CloseVector @click="modalController.toggleReplaceWeightIsActive()" />
       </div>
       <div class="modal-content">
         <form @submit.prevent="submitForm('replaceWeight')">
@@ -215,11 +215,11 @@ const submitForm = (trigger: String) => {
 
   <div
     class="modal"
-    :style="{ display: katinas.replaceAgeIsActive ? 'block' : 'none' }"
+    :style="{ display: modalController.replaceAgeIsActive ? 'block' : 'none' }"
   >
     <div class="modal-container">
       <div class="exit-button">
-        <CloseVector @click="katinas.toggleReplaceAgeIsActive()" />
+        <CloseVector @click="modalController.toggleReplaceAgeIsActive()" />
       </div>
       <div class="modal-content">
         <form @submit.prevent="submitForm('replaceAge')">
@@ -243,11 +243,11 @@ const submitForm = (trigger: String) => {
 
   <div
     class="modal"
-    :style="{ display: katinas.replaceGoalIsActive ? 'block' : 'none' }"
+    :style="{ display: modalController.replaceGoalIsActive ? 'block' : 'none' }"
   >
     <div class="modal-container">
       <div class="exit-button">
-        <CloseVector @click="katinas.toggleReplaceGoalIsActive()" />
+        <CloseVector @click="modalController.toggleReplaceGoalIsActive()" />
       </div>
       <div class="modal-content">
         <form @submit.prevent="submitForm('replaceGoal')">
@@ -273,15 +273,15 @@ const submitForm = (trigger: String) => {
 
   <div
     class="modal"
-    :style="{ display: katinas.editFoodItem ? 'block' : 'none' }"
+    :style="{ display: modalController.editFoodItem ? 'block' : 'none' }"
   >
     <div class="modal-container">
       <div class="exit-button">
-        <CloseVector @click="katinas.toggleEditFoodItem()" />
+        <CloseVector @click="modalController.toggleEditFoodItem()" />
       </div>
       <div class="modal-content">
         <form @submit.prevent="submitForm('editFood')">
-          <div>Edit {{ katinas.oldFoodName }}:</div>
+          <div>Edit {{ modalController.oldFoodName }}:</div>
           <div>
             <label for="editFoodName" style="display: none"
               >Edit food name:</label

@@ -3,9 +3,9 @@ import FireIcon from '../assets/FireIcon.vue';
 import { useUserData } from '../stores/userData.ts';
 import { useModalSettingsActive } from '../stores/modalSettingsController.ts';
 
-const katinass = useModalSettingsActive();
+const modalController = useModalSettingsActive();
 
-const katinas = useUserData();
+const user = useUserData();
 </script>
 
 <template>
@@ -14,26 +14,22 @@ const katinas = useUserData();
     <div class="steps-completed-container">
       <div class="icon-container"><FireIcon class="shoe-icon" /></div>
       <div class="steps-completed">
-        {{ katinas.computeCaloriesBurntSteps() }} +
-        {{ katinas.getCaloriesBurnt() }} =
-        {{ katinas.computeTotalCaloriesBurnt().toString() }}
+        {{ user.computeCaloriesBurntSteps() }} + {{ user.getCaloriesBurnt() }} =
+        {{ user.computeTotalCaloriesBurnt().toString() }}
       </div>
     </div>
     <div class="goal-container">
       <div class="input-containter">
-        <button
-          @click="katinas.updateCalories($route.params.date, 'increment')"
-        >
+        <button @click="user.updateCalories($route.params.date, 'increment')">
           +
         </button>
-        <button
-          @click="katinas.updateCalories($route.params.date, 'decrement')"
-        >
+        <button @click="user.updateCalories($route.params.date, 'decrement')">
           -
         </button>
-        <button @click="katinass.toggleNewCaloriesIsActive()">Edit</button>
-
-        <button @click="katinas.updateCalories($route.params.date, 'zero')">
+        <button @click="modalController.toggleNewCaloriesIsActive()">
+          Edit
+        </button>
+        <button @click="user.updateCalories($route.params.date, 'zero')">
           Zero
         </button>
       </div>

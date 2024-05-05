@@ -2,27 +2,27 @@ import { useUserData } from '../stores/userData.ts';
 
 // Function to create the data object
 export function data() {
-  const katinas = useUserData();
+  const user = useUserData();
   return {
     labels: [
-      ['Food', katinas.computeConsumedEnergy()],
-      ['Base Goal', katinas.user.goal],
-      ['Exercise', katinas.computeTotalCaloriesBurnt().toString()],
+      ['Food', user.computeConsumedEnergy()],
+      ['Base Goal', user.user.goal],
+      ['Exercise', user.computeTotalCaloriesBurnt().toString()],
     ],
     datasets: [
       {
         backgroundColor: ['#7ec099', '#e1ecf5', '#ffc400'],
         data: [
-          katinas.computeConsumedEnergy(),
+          user.computeConsumedEnergy(),
           parseInt(
-            katinas.computeRemainder(
-              katinas.getGoal(),
-              katinas.computeConsumedEnergy(),
-              katinas.computeTotalCaloriesBurnt()
+            user.computeRemainder(
+              user.getGoal(),
+              user.computeConsumedEnergy(),
+              user.computeTotalCaloriesBurnt()
             ),
             10
           ),
-          katinas.computeTotalCaloriesBurnt(),
+          user.computeTotalCaloriesBurnt(),
         ],
         borderRadius: 5,
         drawBorder: false,

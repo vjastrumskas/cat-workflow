@@ -510,6 +510,7 @@ export const useUserData = defineStore('user', () => {
     setItem('mealTracker', combinedData);
   };
 
+  // Insert empty date template when we browse the date by using router.
   const insertDateTemplate = (date: string | string[]): void => {
     const targetDate = user.value.dates.find(d => d.date === date);
 

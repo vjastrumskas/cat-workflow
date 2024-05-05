@@ -5,10 +5,10 @@ import { useUserData } from '../stores/userData.ts';
 const newFood = ref('');
 const foodEnergy = ref('');
 
-const katinas = useUserData();
+const user = useUserData();
 
 const addFood = () => {
-  katinas.addFood(newFood.value, foodEnergy.value);
+  user.addFood(newFood.value, foodEnergy.value);
   newFood.value = '';
   foodEnergy.value = '';
 };
