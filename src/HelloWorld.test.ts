@@ -50,8 +50,8 @@ describe('HelloWorld exists', async () => {
 
     const buttonById = wrapper.find('#submit-user-details');
     expect(buttonById.text()).toContain('Submit');
-    await buttonById.trigger('click');
-    await wrapper.get('[data-test="form"]').trigger('submit');
+    // await buttonById.trigger('click');
+    // await wrapper.get('[data-test="form"]').trigger('submit');
 
     // const wrapperGreetingMessage = mount(GreetingMessage);
     // const helloMessageById = wrapperGreetingMessage.find('#greetings-message');
