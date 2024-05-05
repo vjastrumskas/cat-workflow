@@ -9,7 +9,9 @@ const modal = useModalActive();
 <template>
   <div class="container-greetings">
     <div class="inner-container-greetings-left">
-      <div class="greetings-message">Hello, {{ katinas.user.name }}</div>
+      <div id="greetings-message" class="greetings-message">
+        Hello, {{ katinas.user.name }}
+      </div>
       <div class="not-you-class" @click="modal.toggleModal()">
         Not you? Click here
       </div>

@@ -15,7 +15,8 @@ const weight = ref('');
 const age = ref('');
 const goal = ref('');
 const editFoodName = ref('');
-// const editCalores = ref('');
+const editCalories = ref('');
+const confirmedDeletion = ref(false);
 const route = useRoute();
 
 const handleEscKey = (event: any) => {
@@ -70,9 +71,21 @@ const submitForm = (trigger: String) => {
     katinas.toggleReplaceGoalIsActive();
     goal.value = '';
   } else if (trigger === 'editFood') {
-    user.changeFoodName(katinas.oldFoodName, editFoodName.value);
-    katinas.toggleEditFoodItem();
-    editFoodName.value = '';
+    if (confirmedDeletion.value) {
+      user.deleteFoodByName(katinas.oldFoodName);
+      katinas.toggleEditFoodItem();
+      editFoodName.value = '';
+      editCalories.value = '';
+      console.log('deleted');
+    } else {
+      user.changeCalories(katinas.oldFoodName, editCalories.value);
+      user.changeFoodName(katinas.oldFoodName, editFoodName.value);
+      katinas.toggleEditFoodItem();
+      editFoodName.value = '';
+      editCalories.value = '';
+      console.log('edited');
+      console.log(confirmedDeletion.value);
+    }
   }
 };
 </script>
@@ -277,26 +290,45 @@ const submitForm = (trigger: String) => {
               id="editFoodName"
               v-model="editFoodName"
               placeholder="Type in new name..."
+              :disabled="confirmedDeletion"
             />
           </div>
           <div class="note-message">
             * Note this will affect food names of your previous entries.
           </div>
-          <!-- <div> -->
-          <!-- <label for="editFoodCalories" style="display: none"
+          <div>
+            <label for="editFoodCalories" style="display: none"
               >Edit food calories:</label
             >
             <input
               id="editFoodCalories"
-              v-model="editCalores"
+              v-model="editCalories"
               placeholder="Type in calories..."
+              :disabled="confirmedDeletion"
+              :style="{ color: confirmedDeletion ? 'grey' : 'black' }"
             />
           </div>
           <div class="note-message">
-            * Note this will change your food calories.
-          </div> -->
+            * Note this will affect calories on all records.
+          </div>
           <div>
-            <button type="submit">Submit</button>
+            <button type="submit" :disabled="confirmedDeletion">Submit</button>
+          </div>
+          <div class="delete-container">
+            <div>
+              <input
+                type="checkbox"
+                id="deletion"
+                value="true"
+                v-model="confirmedDeletion"
+              />
+            </div>
+            <div>
+              <label for="deletion" style="display: none">Delete</label>
+              <button type="submit" :disabled="!confirmedDeletion">
+                Delete
+              </button>
+            </div>
           </div>
         </form>
       </div>
@@ -324,7 +356,7 @@ const submitForm = (trigger: String) => {
 /* Modal Content/Box */
 .modal-container {
   display: grid;
-  grid-template-rows: 1fr 4fr;
+  grid-template-rows: 1fr 9fr;
   background-color: #ffffff;
   border-radius: 15px;
   margin: 5% auto; /* 15% from the top and centered */
@@ -337,12 +369,15 @@ const submitForm = (trigger: String) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: auto;
 }
 
 .exit-button {
   display: flex;
   justify-content: right;
+  min-height: 20px;
+}
+
+svg {
   cursor: pointer;
 }
 
@@ -350,8 +385,13 @@ const submitForm = (trigger: String) => {
   font-size: 0.5em;
 }
 
-form {
-  grid-template-rows: 1fr, 1fr, 1fr, 1fr;
+.delete-container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  /* justify-content: center; */
+  justify-items: right;
+  gap: 3%;
 }
 
 form > div {

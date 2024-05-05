@@ -530,18 +530,18 @@ export const useUserData = defineStore('user', () => {
   };
 
   const changeFoodName = (oldFoodName: string, newFoodName: string) => {
-    const horseIndex = user.value.foods.findIndex(
+    const foodIndex = user.value.foods.findIndex(
       foodEntry => foodEntry.food === oldFoodName
     );
 
-    if (horseIndex !== -1) {
+    if (foodIndex !== -1) {
       const existingData = getItem<{ [key: string]: any }>('mealTracker');
       if (!existingData) {
         return;
       }
 
       // Change main food name
-      user.value.foods[horseIndex].food = newFoodName;
+      user.value.foods[foodIndex].food = newFoodName;
 
       // Change food names in dates
       const updatedDates = user.value.dates.map(dateObj => {
@@ -554,7 +554,7 @@ export const useUserData = defineStore('user', () => {
         return { ...dateObj, foods: updatedFoods };
       });
 
-      // Update Pinia
+      // Update Pinia store
       user.value.dates = user.value.dates.map(dateObj => {
         const matchingUpdatedDate = updatedDates.find(
           updatedDate => updatedDate.date === dateObj.date
@@ -570,6 +570,39 @@ export const useUserData = defineStore('user', () => {
       };
       setItem('mealTracker', combinedData);
     }
+  };
+
+  const changeCalories = (oldFoodName: string, newCalories: string) => {
+    const foodIndex = user.value.foods.findIndex(
+      foodEntry => foodEntry.food === oldFoodName
+    );
+
+    // Change main food calories (baseEnergy). Note! It does not save data to local storage.
+    if (foodIndex !== -1) {
+      user.value.foods[foodIndex].baseEnergy = newCalories;
+    }
+  };
+
+  const deleteFoodByName = (oldFoodName: string) => {
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+    if (!existingData) {
+      return;
+    }
+
+    // Remove main food entry and dates containing the food
+    user.value.foods = user.value.foods.filter(
+      foodEntry => foodEntry.food !== oldFoodName
+    );
+    user.value.dates.forEach(dateObj => {
+      dateObj.foods = dateObj.foods.filter(food => food.food !== oldFoodName);
+    });
+
+    // Update Pinia store
+    const combinedData = {
+      ...existingData,
+      [user.value.name]: user.value,
+    };
+    setItem('mealTracker', combinedData);
   };
 
   return {
@@ -609,5 +642,7 @@ export const useUserData = defineStore('user', () => {
     insertDateTemplate,
     toggleFavoriteSort,
     changeFoodName,
+    changeCalories,
+    deleteFoodByName,
   };
 });

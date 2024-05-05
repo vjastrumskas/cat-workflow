@@ -116,7 +116,7 @@ onMounted(() => {
 <template>
   <div class="modal" :style="{ display: modal.isActive ? 'block' : 'none' }">
     <div class="modal-content">
-      <form @submit.prevent="submitForm()">
+      <form data-test="form" @submit.prevent="submitForm()">
         <div>
           <p>Hello there, stranger.</p>
         </div>
@@ -126,21 +126,32 @@ onMounted(() => {
             v-model="userName"
             @input="checkForKeyMatch"
             placeholder="What's your name?"
+            id="userNameInput"
           />
         </div>
         <div v-if="!userExists">
           <label for="userWeight" style="display: none">User Weight:</label>
-          <input v-model="userWeight" placeholder="Your weight" />
+          <input
+            id="userWeightInput"
+            v-model="userWeight"
+            placeholder="Your weight"
+          />
         </div>
         <div v-if="!userExists" class="options-select-menu">
           <div class="custom-select" :tabindex="tabindex" @blur="open = false">
-            <div class="selected" :class="{ open: open }" @click="open = !open">
+            <div
+              class="selected"
+              :class="{ open: open }"
+              @click="open = !open"
+              id="initial-option"
+            >
               {{ userAge }}
             </div>
             <div class="items" :class="{ selectHide: !open }">
               <div
                 v-for="(option, i) of options"
                 :key="i"
+                :id="'options' + i"
                 @click="
                   userAge = String(option);
                   open = false;
@@ -151,7 +162,7 @@ onMounted(() => {
             </div>
           </div>
         </div>
-        <button type="submit">Submit</button>
+        <button id="submit-user-details" type="submit">Submit</button>
       </form>
     </div>
   </div>
