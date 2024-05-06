@@ -119,21 +119,23 @@ onMounted(() => {
           <p data-testid="greetings-message">Hello there, stranger.</p>
         </div>
         <div>
-          <label for="userNameInput"
-            ><input
-              v-model="userName"
-              @input="checkForKeyMatch"
-              placeholder="What's your name?"
-              id="userNameInput"
-          /></label>
+          <label for="userNameInput" style="display: none">User Name:</label>
+          <input
+            v-model="userName"
+            @input="checkForKeyMatch"
+            placeholder="What's your name?"
+            id="userNameInput"
+          />
         </div>
         <div v-if="!userExists">
-          <label for="userWeightInput"
-            ><input
-              id="userWeightInput"
-              v-model="userWeight"
-              placeholder="Your weight"
-          /></label>
+          <label for="userWeightInput" style="display: none"
+            >User Weight:</label
+          >
+          <input
+            id="userWeightInput"
+            v-model="userWeight"
+            placeholder="Your weight"
+          />
         </div>
         <div v-if="!userExists" class="options-select-menu">
           <div class="custom-select" :tabindex="tabindex" @blur="open = false">
