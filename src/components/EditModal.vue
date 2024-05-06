@@ -305,7 +305,6 @@ const submitForm = (trigger: String) => {
               v-model="editCalories"
               placeholder="Type in calories..."
               :disabled="confirmedDeletion"
-              :style="{ color: confirmedDeletion ? 'grey' : 'black' }"
             />
           </div>
           <div class="note-message">
@@ -315,7 +314,8 @@ const submitForm = (trigger: String) => {
             <button type="submit" :disabled="confirmedDeletion">Submit</button>
           </div>
           <div class="delete-container">
-            <div>
+            <div class="delete-helper">Click here to delete</div>
+            <div class="delete-tickmark-container">
               <input
                 type="checkbox"
                 id="deletion"
@@ -325,7 +325,13 @@ const submitForm = (trigger: String) => {
             </div>
             <div>
               <label for="deletion" style="display: none">Delete</label>
-              <button type="submit" :disabled="!confirmedDeletion">
+              <button
+                type="submit"
+                :disabled="!confirmedDeletion"
+                :style="{
+                  backgroundColor: confirmedDeletion ? '#ffcece' : '',
+                }"
+              >
                 Delete
               </button>
             </div>
@@ -385,12 +391,18 @@ svg {
   font-size: 0.5em;
 }
 
-.delete-container {
+.delete-tickmark-container {
   display: flex;
-  width: 100%;
   align-items: center;
-  /* justify-content: center; */
-  justify-items: right;
+  justify-content: right;
+  gap: 3%;
+}
+
+.delete-helper {
+  font-size: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: right;
   gap: 3%;
 }
 
@@ -400,7 +412,7 @@ form > div {
   padding-bottom: 5px;
 }
 
-input {
+input:not(#deletion) {
   box-sizing: border-box;
   background-color: whitesmoke;
   border-radius: 8px;

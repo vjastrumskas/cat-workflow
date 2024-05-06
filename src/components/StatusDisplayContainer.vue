@@ -2,7 +2,7 @@
 import StatusDisplay from './StatusDisplay.vue';
 import { useUserData } from '../stores/userData.ts';
 
-const katinas = useUserData();
+const user = useUserData();
 </script>
 
 <template>
@@ -10,10 +10,10 @@ const katinas = useUserData();
     <div class="formula-display">
       Base Goal - Food + Exercise =
       {{
-        katinas.computeRemainder(
-          katinas.getGoal(),
-          katinas.computeConsumedEnergy(),
-          katinas.computeTotalCaloriesBurnt()
+        user.computeRemainder(
+          user.getGoal(),
+          user.computeConsumedEnergy(user.getRoute(), user.getUserObject()),
+          user.computeTotalCaloriesBurnt()
         )
       }}
     </div>
@@ -22,10 +22,10 @@ const katinas = useUserData();
       <div class="donut-inner">
         <div>
           {{
-            katinas.computeRemainder(
-              katinas.getGoal(),
-              katinas.computeConsumedEnergy(),
-              katinas.computeTotalCaloriesBurnt()
+            user.computeRemainder(
+              user.getGoal(),
+              user.computeConsumedEnergy(user.getRoute(), user.getUserObject()),
+              user.computeTotalCaloriesBurnt()
             )
           }}
         </div>

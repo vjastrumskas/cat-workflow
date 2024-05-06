@@ -5,7 +5,10 @@ export function data() {
   const user = useUserData();
   return {
     labels: [
-      ['Food', user.computeConsumedEnergy()],
+      [
+        'Food',
+        user.computeConsumedEnergy(user.getRoute(), user.getUserObject()),
+      ],
       ['Base Goal', user.user.goal],
       ['Exercise', user.computeTotalCaloriesBurnt().toString()],
     ],
@@ -13,11 +16,11 @@ export function data() {
       {
         backgroundColor: ['#7ec099', '#e1ecf5', '#ffc400'],
         data: [
-          user.computeConsumedEnergy(),
+          user.computeConsumedEnergy(user.getRoute(), user.getUserObject()),
           parseInt(
             user.computeRemainder(
               user.getGoal(),
-              user.computeConsumedEnergy(),
+              user.computeConsumedEnergy(user.getRoute(), user.getUserObject()),
               user.computeTotalCaloriesBurnt()
             ),
             10
@@ -26,8 +29,6 @@ export function data() {
         ],
         borderRadius: 5,
         drawBorder: false,
-        hoverBorderWidth: 1,
-        hoverBorderColor: '#646cff',
       },
     ],
   };
@@ -43,6 +44,9 @@ export function options(): object {
       legend: {
         display: true,
         position: 'right',
+      },
+      tooltip: {
+        enabled: false,
       },
     },
   };

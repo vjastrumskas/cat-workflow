@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useUserData } from '../stores/userData.ts';
 
-const katinas = useUserData();
+const user = useUserData();
 </script>
 
 <template>
-  <div class="donut-inner">{{ katinas.user.goal }}</div>
+  <div class="donut-inner">{{ user.user.goal }}</div>
 </template>
 
 <style scoped>

@@ -2,8 +2,8 @@
 import { useUserData } from '../stores/userData.ts';
 import { useModalSettingsActive } from '../stores/modalSettingsController.ts';
 
-const katinas = useUserData();
-const katinass = useModalSettingsActive();
+const user = useUserData();
+const modalController = useModalSettingsActive();
 </script>
 
 <template>
@@ -11,31 +11,39 @@ const katinass = useModalSettingsActive();
     <div class="content-settings-grid-container">
       <div class="disclaimer-settings">You can edit your settings here.</div>
       <div class="name-container-settings">
-        <div class="name-settings">Current name: {{ katinas.user.name }}</div>
+        <div class="name-settings">Current name:</div>
+        <div class="stats">{{ user.user.name }}</div>
         <div>
-          <button @click="katinass.toggleReplaceNameIsActive()">Edit</button>
+          <button @click="modalController.toggleReplaceNameIsActive()">
+            Edit
+          </button>
         </div>
       </div>
       <div class="weight-container-settings">
-        <div class="weight-settings">
-          Current weight: {{ katinas.user.weight }}
-        </div>
+        <div class="weight-settings">Current weight:</div>
+        <div class="stats">{{ user.user.weight }} kg</div>
         <div>
-          <button @click="katinass.toggleReplaceWeightIsActive()">Edit</button>
+          <button @click="modalController.toggleReplaceWeightIsActive()">
+            Edit
+          </button>
         </div>
       </div>
       <div class="age-container-settings">
-        <div class="age-settings">Current age: {{ katinas.user.age }}</div>
+        <div class="age-settings">Current age:</div>
+        <div class="stats">{{ user.user.age }} y/o</div>
         <div>
-          <button @click="katinass.toggleReplaceAgeIsActive()">Edit</button>
+          <button @click="modalController.toggleReplaceAgeIsActive()">
+            Edit
+          </button>
         </div>
       </div>
       <div class="goal-container-settings">
-        <div class="goal-settings">
-          Current calorie goal: {{ katinas.user.goal }}
-        </div>
+        <div class="goal-settings">Current calorie goal:</div>
+        <div class="stats">{{ user.user.goal }} kcal/day</div>
         <div>
-          <button @click="katinass.toggleReplaceGoalIsActive()">Edit</button>
+          <button @click="modalController.toggleReplaceGoalIsActive()">
+            Edit
+          </button>
         </div>
       </div>
       <div>
@@ -56,13 +64,13 @@ const katinass = useModalSettingsActive();
   margin-top: 10px;
 }
 .content-settings-grid-container {
+  justify-items: center;
   display: grid;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
 .content-settings-grid-container > div {
   padding-bottom: 5px;
-  margin: 0 auto;
   width: 90%;
 }
 
@@ -97,7 +105,7 @@ input {
 .age-container-settings,
 .goal-container-settings {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr;
 }
 
 .name-settings,
@@ -106,6 +114,13 @@ input {
 .goal-settings {
   display: flex;
   justify-content: right;
+  align-items: center;
+  padding-right: 5px;
+}
+
+.stats {
+  display: flex;
+  justify-content: left;
   align-items: center;
   padding-right: 5px;
 }

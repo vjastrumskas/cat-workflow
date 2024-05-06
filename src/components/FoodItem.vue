@@ -3,24 +3,27 @@ import { useUserData } from '../stores/userData.ts';
 import { useModalSettingsActive } from '../stores/modalSettingsController.ts';
 import HeartVector from '../assets/HeartVector.vue';
 
-const katinas = useUserData();
-const katinass = useModalSettingsActive();
+const user = useUserData();
+const modalController = useModalSettingsActive();
 
 function toggleFavoriteFood(foodName: string) {
-  const foundFood = katinas.user.foods.find(food => food.food === foodName);
-  if (foundFood) {
-    foundFood.favorite = !foundFood.favorite;
-  } else {
-    console.log(`Food "${foodName}" not found.`);
+  try {
+    const foundFood = user.user.foods.find(food => food.food === foodName);
+    if (foundFood) {
+      foundFood.favorite = !foundFood.favorite;
+    } else {
+      throw new Error(`Food "${foodName}" not found.`);
+    }
+  } catch (error) {
+    console.error((error as Error).message);
   }
 }
-
 function handleFood(food: string, date: string | string[]) {
-  if (katinass.youAreAtSettings) {
-    katinass.oldFoodName = food;
-    katinass.toggleEditFoodItem();
+  if (modalController.youAreAtSettings) {
+    modalController.oldFoodName = food;
+    modalController.toggleEditFoodItem();
   } else {
-    katinas.insertFood(food, date);
+    user.insertFood(food, date);
   }
 }
 </script>
@@ -28,7 +31,7 @@ function handleFood(food: string, date: string | string[]) {
 <template>
   <TransitionGroup name="fade" tag="ul">
     <li
-      v-for="(item, index) in katinas.getFavorite(katinas.favoriteIsActive)"
+      v-for="(item, index) in user.getFavorite(user.favoriteIsActive)"
       :key="'food' + index"
       class="item-food"
     >

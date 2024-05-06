@@ -1,7 +1,12 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useRoute } from 'vue-router';
+import { useToastMsg } from './toast.ts';
+
 import { getItem, setItem } from '../services/localStorage.ts';
+
+export const MAX_STEPS_VALUE = 150000;
+export const STEPS_GOAL = 10000;
 
 interface User {
   name: string;
@@ -32,7 +37,7 @@ export const useUserData = defineStore('user', () => {
   const user = ref<User>({
     name: '',
     goal: '',
-    stepsgoal: '10000',
+    stepsgoal: STEPS_GOAL.toString(),
     weight: '',
     age: '',
     foods: [],
@@ -47,7 +52,7 @@ export const useUserData = defineStore('user', () => {
   const changeAge = (NewAge: string): void => {
     user.value.age = NewAge;
   };
-  const changeGoal = (NewGoal: string): void => {
+  const changeGoal = (NewGoal: User['goal']): void => {
     user.value.goal = NewGoal;
   };
   const changeFoods = (NewFoods: User['foods']): void => {
@@ -57,13 +62,17 @@ export const useUserData = defineStore('user', () => {
     user.value.dates.push(...NewDates);
   };
 
-  const incrementGoal = (): void => {
-    const numericGoal = parseInt(user.value.goal, 10);
-    const incrementedGoal = (numericGoal + 1).toString();
-    user.value.goal = incrementedGoal;
+  const changeUser = (NewUser: User): void => {
+    user.value = NewUser;
+  };
+  const toast = useToastMsg();
+  const getGoal = (): number => parseInt(user.value.goal, 10);
+  const getRoute = (): string | string[] => {
+    const route = useRoute();
+    return route.params.date;
   };
 
-  const getGoal = (): number => parseInt(user.value.goal, 10);
+  const getUserObject = () => user.value;
 
   const incrementPortion = (
     foodName: string,
@@ -134,7 +143,6 @@ export const useUserData = defineStore('user', () => {
     )?.foods;
 
     if (!targetFoods) {
-      console.log(`Is added ${targetFoods}`);
       return []; // Return an empty array if the target date is not found
     }
     return targetFoods.filter(food => food.added);
@@ -151,10 +159,15 @@ export const useUserData = defineStore('user', () => {
     return user.value.foods;
   };
 
-  const computeConsumedEnergy = (): number => {
-    const route = useRoute();
-    const targetDate = route.params.date;
-    const targetFoods = user.value.dates.find(
+  const computeConsumedEnergy = (
+    targetDate: string | string[],
+    userObject?: User
+  ): number => {
+    if (!userObject) {
+      return 0; // Return 0 if userObject is undefined
+    }
+
+    const targetFoods = userObject.dates?.find(
       date => date.date === targetDate
     )?.foods;
 
@@ -165,7 +178,7 @@ export const useUserData = defineStore('user', () => {
     // Calculate total energy consumed
     const totalEnergy = targetFoods.reduce((accumulator, currentFood) => {
       if (currentFood.added) {
-        const foodItem = user.value.foods.find(
+        const foodItem = userObject.foods.find(
           food => food.food === currentFood.food
         );
         if (foodItem) {
@@ -173,13 +186,18 @@ export const useUserData = defineStore('user', () => {
             (parseInt(foodItem.baseEnergy, 10) *
               parseInt(currentFood.portion, 10)) /
             100;
-          return accumulator + foodEnergy;
+
+          if (!Number.isNaN(foodEnergy)) {
+            // Only add to accumulator if foodEnergy is not NaN
+            return accumulator + foodEnergy;
+          }
         }
       }
       return accumulator;
     }, 0);
 
-    return totalEnergy;
+    const result = Math.floor(Math.min(Math.max(totalEnergy, 0), 4000));
+    return result;
   };
 
   function computeRemainder(
@@ -189,7 +207,10 @@ export const useUserData = defineStore('user', () => {
   ): string {
     // Basic approximation: Calories = Weight (kg) × 24 + Age (years) × 3.5
     const calories = goalEnergy - consumedEnergy + exerciseEnergy;
-    return calories.toString();
+
+    const result = Math.floor(Math.min(Math.max(calories, 0), 4000));
+
+    return result.toString();
   }
 
   const insertFood = (food: string, date: string | string[]) => {
@@ -205,17 +226,18 @@ export const useUserData = defineStore('user', () => {
           added: true,
           portion: '100',
         });
+        toast.showToast(
+          'success',
+          'Meal added',
+          `'${food}' has been added to ${date}.`
+        );
       } else {
-        console.log(`Food '${food}' already exists on ${date}.`);
+        toast.showToast(
+          'warn',
+          'Action stopped',
+          `'${food}' already added to ${date}.`
+        );
       }
-    } else {
-      // If the date doesn't exist, create a new entry
-      user.value.dates.push({
-        date,
-        steps: '0',
-        caloriesBurnt: '0',
-        foods: [{ food, added: true, portion: '100' }],
-      });
     }
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
     const combinedData = {
@@ -226,20 +248,30 @@ export const useUserData = defineStore('user', () => {
   };
 
   const addFood = (food: string, baseEnergy: string) => {
-    const newFood = {
-      food, // Replace with the actual food name
-      favorite: false, // Set to false initially
-      portion: '100', // Specify the portion size (e.g., 150 grams)
-      baseEnergy, // Specify the base energy (calories)
-    };
+    // Check if the food already exists in user.value.foods
+    const existingFood = user.value.foods.find(foods => foods.food === food);
 
-    user.value.foods.push(newFood);
-    const existingData = getItem<{ [key: string]: any }>('mealTracker');
-    const combinedData = {
-      ...existingData, // Spread existing data
-      [user.value.name]: user.value, // Add Tadis data dynamically
-    };
-    setItem('mealTracker', combinedData);
+    if (existingFood) {
+      // Food already exists, handle accordingly (e.g., update portion or energy)
+      toast.showToast('warn', 'Action stopped', `'${food}' is already added.`);
+      // You can modify the existingFood object here if needed
+    } else {
+      // Food doesn't exist, create a new entry
+      const newFood = {
+        food,
+        favorite: false,
+        portion: '100',
+        baseEnergy,
+      };
+
+      user.value.foods.push(newFood);
+      const existingData = getItem<{ [key: string]: any }>('mealTracker');
+      const combinedData = {
+        ...existingData,
+        [user.value.name]: user.value,
+      };
+      setItem('mealTracker', combinedData);
+    }
   };
 
   const resetUserData = () => {
@@ -278,6 +310,9 @@ export const useUserData = defineStore('user', () => {
 
     const currentSteps = parseInt(targetDate.steps, 10);
     const newSteps = currentSteps + 1000;
+    if (newSteps > MAX_STEPS_VALUE) {
+      return;
+    }
     targetDate.steps = newSteps.toString();
 
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
@@ -299,6 +334,9 @@ export const useUserData = defineStore('user', () => {
     // Find the specific food item within the date's foods array
     const currentSteps = parseInt(targetDate.steps, 10);
     const newSteps = currentSteps - 1000;
+    if (newSteps < 0) {
+      return;
+    }
     targetDate.steps = newSteps.toString();
 
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
@@ -313,13 +351,20 @@ export const useUserData = defineStore('user', () => {
     // Find the date object based on the provided date
     const targetDate = user.value.dates.find(d => d.date === date);
     if (!targetDate) {
-      console.error(`Date ${date} not found.`);
       return;
     }
 
-    const newSteps = steps;
-    targetDate.steps = newSteps.toString();
+    // Convert steps to a numeric value
+    const parsedSteps = parseInt(steps, 10);
 
+    // Check if steps exceed 15000
+    if (parsedSteps > MAX_STEPS_VALUE) {
+      targetDate.steps = MAX_STEPS_VALUE.toString(); // Set steps to 15000
+    } else {
+      targetDate.steps = parsedSteps.toString(); // Otherwise, use the original steps
+    }
+
+    // Update mealTracker data
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
     const combinedData = {
       ...existingData, // Spread existing data
@@ -366,7 +411,6 @@ export const useUserData = defineStore('user', () => {
     // Find the date object based on the provided date
     const targetDate = user.value.dates.find(d => d.date === route.params.date);
     if (!targetDate) {
-      console.error(`Date ${route.params.date} not found.`);
       return '0';
     }
 
@@ -382,7 +426,6 @@ export const useUserData = defineStore('user', () => {
     // Find the date object based on the provided date
     const targetDate = user.value.dates.find(d => d.date === route.params.date);
     if (!targetDate) {
-      console.error(`Date ${route.params.date} not found.`);
       return 0;
     }
 
@@ -435,7 +478,10 @@ export const useUserData = defineStore('user', () => {
         return;
     }
 
-    targetDate.caloriesBurnt = Math.max(newCalories, 0).toString();
+    targetDate.caloriesBurnt = Math.min(
+      Math.max(newCalories, 0),
+      4000
+    ).toString();
 
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
     const combinedData = {
@@ -473,9 +519,8 @@ export const useUserData = defineStore('user', () => {
 
     changeWeight(newWeight);
     const combinedData = {
-      ...existingData, // Spread existing data
-      // [user.value.name]: user.value, // Add Tadis data dynamically with the new key
-      [user.value.name]: user.value, // Add Tadis data dynamically with the new key
+      ...existingData,
+      [user.value.name]: user.value,
     };
     setItem('mealTracker', combinedData);
   };
@@ -488,9 +533,8 @@ export const useUserData = defineStore('user', () => {
 
     changeAge(newAge);
     const combinedData = {
-      ...existingData, // Spread existing data
-      // [user.value.name]: user.value, // Add Tadis data dynamically with the new key
-      [user.value.name]: user.value, // Add Tadis data dynamically with the new key
+      ...existingData,
+      [user.value.name]: user.value,
     };
     setItem('mealTracker', combinedData);
   };
@@ -503,9 +547,8 @@ export const useUserData = defineStore('user', () => {
 
     changeGoal(newGoal);
     const combinedData = {
-      ...existingData, // Spread existing data
-      // [user.value.name]: user.value, // Add Tadis data dynamically with the new key
-      [user.value.name]: user.value, // Add Tadis data dynamically with the new key
+      ...existingData,
+      [user.value.name]: user.value,
     };
     setItem('mealTracker', combinedData);
   };
@@ -525,7 +568,7 @@ export const useUserData = defineStore('user', () => {
     }
   };
 
-  const favoriteIsActive = ref(true);
+  const favoriteIsActive = ref(false);
   const toggleFavoriteSort = () => {
     favoriteIsActive.value = !favoriteIsActive.value;
   };
@@ -606,6 +649,47 @@ export const useUserData = defineStore('user', () => {
     setItem('mealTracker', combinedData);
   };
 
+  const computeStepsGoalAchievement = (
+    StepsGoal: number,
+    StepsCompleted: number
+  ): number => {
+    const result = StepsGoal - StepsCompleted;
+    if (result < 0) {
+      return 0;
+    }
+    if (result > STEPS_GOAL) {
+      return STEPS_GOAL;
+    }
+    return result;
+  };
+
+  const getStepsCompletedModifed = (StepsCompleted: number): number => {
+    const result = StepsCompleted;
+    if (result < 0) {
+      return 0;
+    }
+    if (result > STEPS_GOAL) {
+      return STEPS_GOAL;
+    }
+    return result;
+  };
+
+  // Validation function for newFood
+  const validateNewFood = (NewFoodName: string) =>
+    NewFoodName.length >= 1 && NewFoodName.length <= 12;
+
+  // Validation function for foodEnergy
+  const validateFoodEnergy = (FoodEnergy: string) => {
+    const numericValue = parseInt(FoodEnergy, 10);
+    return (
+      !Number.isNaN(numericValue) && numericValue >= 1 && numericValue <= 1000
+    );
+  };
+
+  // Computed property to check overall validity
+  const isFoodValid = (NewFoodName: string, FoodEnergy: string) =>
+    validateNewFood(NewFoodName) && validateFoodEnergy(FoodEnergy);
+
   return {
     user,
     favoriteIsActive,
@@ -615,8 +699,10 @@ export const useUserData = defineStore('user', () => {
     changeGoal,
     changeFoods,
     changeDates,
-    incrementGoal,
+    changeUser,
     getGoal,
+    getRoute,
+    getUserObject,
     incrementPortion,
     decrementPortion,
     isAdded,
@@ -645,5 +731,8 @@ export const useUserData = defineStore('user', () => {
     changeFoodName,
     changeCalories,
     deleteFoodByName,
+    computeStepsGoalAchievement,
+    getStepsCompletedModifed,
+    isFoodValid,
   };
 });

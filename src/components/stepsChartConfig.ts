@@ -7,14 +7,19 @@ export function data() {
     datasets: [
       {
         backgroundColor: ['#ffc400'],
-        data: [user.getStepsCompleted()],
+        data: [user.getStepsCompletedModifed(user.getStepsCompleted())],
         barPercentage: 0.3,
         barThickness: 10,
         borderRadius: 10,
       },
       {
         backgroundColor: ['#e1ecf5'],
-        data: [user.getStepsGoal() - user.getStepsCompleted()],
+        data: [
+          user.computeStepsGoalAchievement(
+            user.getStepsGoal(),
+            user.getStepsCompleted()
+          ),
+        ],
         barPercentage: 0.3,
         barThickness: 10,
         borderRadius: 10,
@@ -43,6 +48,9 @@ export function options(): object {
       roundedBars: {
         cornerRadius: 4,
         allCorners: true,
+      },
+      tooltip: {
+        enabled: false,
       },
       datalabels: {
         display: false,

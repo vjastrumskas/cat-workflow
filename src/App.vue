@@ -5,7 +5,10 @@ import EditModal from './components/EditModal.vue';
 </script>
 
 <template>
+  <ToastMessage style="width: 300px" position="bottom-center"> </ToastMessage>
   <HelloWorld />
   <RouterView />
   <EditModal />
 </template>
+
+<style scoped></style>

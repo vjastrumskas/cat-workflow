@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import StepsChart from './StepsChart.vue';
 import ShoeIcon from '../assets/ShoeIcon.vue';
-import { useUserData } from '../stores/userData.ts';
+import { useUserData, STEPS_GOAL } from '../stores/userData.ts';
 import { useModalSettingsActive } from '../stores/modalSettingsController.ts';
 
-const katinass = useModalSettingsActive();
-const katinas = useUserData();
+const modalController = useModalSettingsActive();
+const user = useUserData();
+const stepsGoal = ref(STEPS_GOAL);
 </script>
 
 <template>
@@ -16,21 +18,20 @@ const katinas = useUserData();
         <ShoeIcon class="shoe-icon" />
       </div>
       <div class="steps-completed">
-        {{ katinas.getStepsCompleted() }}
+        {{ user.getStepsCompleted() }}
         <!-- <span class="step-change-indicator">+1000</span> -->
       </div>
     </div>
     <div class="goal-container">
       <div class="input-containter">
-        <button @click="katinas.incrementSteps($route.params.date)">+</button>
-        <button @click="katinas.decrementSteps($route.params.date)">-</button>
-        <button @click="katinass.toggleNewStepsIsActive()">Edit</button>
-
-        <button @click="katinas.zeroSteps($route.params.date)">Zero</button>
+        <button @click="user.incrementSteps($route.params.date)">+</button>
+        <button @click="user.decrementSteps($route.params.date)">-</button>
+        <button @click="modalController.toggleNewStepsIsActive()">Edit</button>
+        <button @click="user.zeroSteps($route.params.date)">Zero</button>
       </div>
     </div>
     <div class="innner-container-exercise-chart">
-      <div class="goal-statement">Goal: 10000 steps</div>
+      <div class="goal-statement">Goal: {{ stepsGoal }} steps</div>
       <div class="steps-chart-container">
         <StepsChart />
       </div>
@@ -73,7 +74,7 @@ const katinas = useUserData();
 }
 
 .shoe-icon {
-  width: 100%; /* Ensure the SVG scales to fit the container */
+  width: 100%;
   height: auto;
   transform: rotate(-30deg);
 }

@@ -105,6 +105,8 @@ li.today-date {
 
 a.router-link-active > li {
   border: 1px solid #646cff;
+  background-color: #dbddff;
+  transition: 0.5s;
 }
 
 @media screen and (max-width: 620px) {

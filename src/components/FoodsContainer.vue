@@ -3,18 +3,18 @@ import FoodItem from './FoodItem.vue';
 import { useUserData } from '../stores/userData.ts';
 import ExclamationMark from '../assets/ExclamationMark.vue';
 
-const katinas = useUserData();
+const user = useUserData();
 </script>
 
 <template>
-  <div v-if="katinas.user.foods.length" class="container-foods-main">
+  <div v-if="user.user.foods.length" class="container-foods-main">
     <div class="foods-title">
       Available foods
       <button
-        @click="katinas.toggleFavoriteSort()"
+        @click="user.toggleFavoriteSort()"
         :style="{
-          backgroundColor: katinas.favoriteIsActive ? '#646cff' : '',
-          color: katinas.favoriteIsActive ? 'white' : '',
+          backgroundColor: user.favoriteIsActive ? '#646cff' : '',
+          color: user.favoriteIsActive ? 'white' : '',
         }"
       >
         Favorite
@@ -29,7 +29,7 @@ const katinas = useUserData();
       <ExclamationMark class="exclamation-mark" />
       No food items registered yet.
       <router-link :to="`/settings`">
-        <span> Register here.</span>
+        <span class="no-food-class"> Register here.</span>
       </router-link>
     </div>
   </div>
@@ -110,6 +110,11 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.no-food-class:hover {
+  cursor: pointer;
+  color: #646cff;
 }
 
 @media screen and (max-width: 620px) {

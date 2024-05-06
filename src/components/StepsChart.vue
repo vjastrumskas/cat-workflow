@@ -7,7 +7,7 @@ import {
   BarElement,
 } from 'chart.js';
 import { Bar } from 'vue-chartjs';
-import * as chartConfig from './chartConfigExercise.ts';
+import * as chartConfig from './stepsChartConfig.ts';
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement);
 
@@ -27,3 +27,4 @@ export default {
 </template>
 
 <style scoped></style>
+./stepsChartConfig.ts

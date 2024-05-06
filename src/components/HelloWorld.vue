@@ -11,7 +11,7 @@ const minAge = 16;
 const maxAge = 120;
 const route = useRoute();
 
-const katinas = useUserData();
+const user = useUserData();
 const modal = useModalActive();
 const userName = ref('');
 const userWeight = ref('');
@@ -38,29 +38,28 @@ function calculateGoal(weightInKg: string, ageInYears: string): string {
 }
 
 function submitForm() {
-  katinas.resetUserData();
-  katinas.changeName(userName.value);
+  user.resetUserData();
+  user.changeName(userName.value);
   if (!userExists.value) {
-    katinas.changeWeight(userWeight.value);
-    katinas.changeAge(userAge.value);
-    katinas.changeGoal(calculateGoal(userWeight.value, userAge.value));
+    user.changeWeight(userWeight.value);
+    user.changeAge(userAge.value);
+    user.changeGoal(calculateGoal(userWeight.value, userAge.value));
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
     const combinedData = {
-      ...existingData, // Spread existing data
-      [katinas.user.name]: katinas.user, // Add Tadis data dynamically
+      ...existingData,
+      [user.user.name]: user.user,
     };
     setItem('mealTracker', combinedData);
-    katinas.insertDateTemplate(route.params.date);
-
+    user.insertDateTemplate(route.params.date);
+    userName.value = '';
+    userWeight.value = '';
     modal.toggleModal();
   } else {
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
 
-    katinas.changeWeight(existingData?.[userName.value]?.weight);
-    katinas.changeAge(existingData?.[userName.value]?.age);
-    katinas.changeFoods(existingData?.[userName.value]?.foods);
-    katinas.changeDates(existingData?.[userName.value]?.dates);
-    katinas.changeGoal(calculateGoal(katinas.user.weight, katinas.user.age));
+    user.changeUser(existingData?.[userName.value]);
+    userName.value = '';
+    userWeight.value = '';
     modal.toggleModal();
   }
 }
@@ -68,22 +67,20 @@ function submitForm() {
 function checkLocalStorageForKey(key: string) {
   const value: { [key: string]: any } | null = getItem(key);
   if (value !== null) {
-    // // The value exists in local storage.
-    // console.log('Value found:', (value as { name: string }).name);
     const allKeys = Object.keys(value as Record<string, any>);
 
-    // Access the first object (in this case, "Vaidis")
+    // Access the first user object upon accessing the app.
     const firstObjectName = allKeys[0];
 
     const firstObject: { [key: string]: any } = value[firstObjectName];
-    console.log(firstObject);
-    katinas.changeName(firstObject.name);
-    katinas.changeWeight(firstObject.weight);
-    katinas.changeAge(firstObject.age);
-    katinas.changeFoods(firstObject.foods);
-    katinas.changeDates(firstObject.dates);
 
-    katinas.changeGoal(calculateGoal(katinas.user.weight, katinas.user.age));
+    user.changeName(firstObject.name);
+    user.changeWeight(firstObject.weight);
+    user.changeAge(firstObject.age);
+    user.changeFoods(firstObject.foods);
+    user.changeDates(firstObject.dates);
+
+    user.changeGoal(calculateGoal(user.user.weight, user.user.age));
   } else {
     // The value does not exist in local storage.
     console.log('Value not found or is null.');
@@ -93,21 +90,15 @@ function checkLocalStorageForKey(key: string) {
 
 const checkForKeyMatch = () => {
   const existingData = getItem<{ [key: string]: any }>('mealTracker');
+  // Check if the user exists in local storage.
 
-  // Check if the 'Artiom' key exists in the parsed data
   if (existingData && existingData[userName.value]) {
-    console.log('Input matches Artiom');
     userExists.value = true;
-    // Handle the case where the input matches "Artiom"
-    // You can access Artiom's data using parsedData.Artiom
-    // For example: const artiomName = parsedData.Artiom.name;
   } else {
-    console.log('Input does not match Artiom');
-    // Handle other cases
     userExists.value = false;
   }
 };
-// Call the function
+
 onMounted(() => {
   checkLocalStorageForKey('mealTracker');
 });
@@ -192,7 +183,7 @@ onMounted(() => {
   border-radius: 15px;
   margin: 5% auto; /* 15% from the top and centered */
   padding: 20px;
-  width: 200px; /* Could be more or less, depending on screen size */
+  width: 300px;
   height: auto;
 }
 
