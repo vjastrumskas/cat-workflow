@@ -116,7 +116,7 @@ onMounted(() => {
     <div class="modal-content">
       <form data-test="form" @submit.prevent="submitForm()">
         <div>
-          <p>Hello there, stranger.</p>
+          <p data-testid="greetings-message">Hello there, stranger.</p>
         </div>
         <div>
           <label for="userName" style="display: none">User Name:</label>
