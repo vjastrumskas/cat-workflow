@@ -129,7 +129,7 @@ const submitForm = (trigger: String) => {
         <form @submit.prevent="submitForm('newSteps')">
           <div>Edit steps:</div>
           <div>
-            <label for="newSteps" style="display: none">Edit steps:</label>
+            <label for="stepsInput" style="display: none">Edit steps:</label>
             <input
               id="stepsInput"
               v-model="steps"

@@ -10,6 +10,15 @@ test('adding a habit', async ({ page }) => {
   await expect(page).toHaveTitle('Brocco Meal Tracker');
   await expect(page.getByText('Hello there, stranger.')).toBeVisible();
   await page.getByPlaceholder("What's your name?").fill('Vaidotas');
-  await page.getByPlaceholder('Your weight').fill('37');
+  await page.getByPlaceholder('Your weight').fill('82');
   await page.getByTestId('initial-option-test').click();
+  await expect(page.getByText('37')).toBeVisible();
+  await page.getByText('37').click();
+  await page.getByRole('button', { name: 'Submit' }).click();
+  await expect(
+    page.getByText('Base Goal - Food + Exercise = 2097')
+  ).toBeVisible();
+  await page.getByLabel('increment-steps').click();
+  await page.getByLabel('increment-steps').click();
+  await page.getByLabel('increment-steps').click();
 });

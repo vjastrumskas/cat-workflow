@@ -24,8 +24,18 @@ const stepsGoal = ref(STEPS_GOAL);
     </div>
     <div class="goal-container">
       <div class="input-containter">
-        <button @click="user.incrementSteps($route.params.date)">+</button>
-        <button @click="user.decrementSteps($route.params.date)">-</button>
+        <button
+          aria-label="increment-steps"
+          @click="user.incrementSteps($route.params.date)"
+        >
+          +
+        </button>
+        <button
+          aria-label="decrement-steps"
+          @click="user.decrementSteps($route.params.date)"
+        >
+          -
+        </button>
         <button @click="modalController.toggleNewStepsIsActive()">Edit</button>
         <button @click="user.zeroSteps($route.params.date)">Zero</button>
       </div>
