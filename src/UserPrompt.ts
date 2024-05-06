@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { expect, it, describe, beforeEach } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
 
-import HelloWorld from './components/HelloWorld.vue';
+import HelloWorld from './components/UserPrompt.vue';
 // import GreetingMessage from './components/GreetingMessage.vue';
 import { useModalActive } from './stores/modalController.ts';
 
