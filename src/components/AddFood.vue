@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useToastMsg } from '../stores/toast.ts';
+import displayToast from '../services/toastMessage.ts';
+
 import { useUserData } from '../stores/userData.ts';
 
 const newFood = ref('');
 const foodEnergy = ref('');
-const toast = useToastMsg();
+
 const user = useUserData();
 
 const addFood = () => {
@@ -13,17 +14,9 @@ const addFood = () => {
     user.addFood(newFood.value, foodEnergy.value);
     newFood.value = '';
     foodEnergy.value = '';
-    toast.showToast(
-      'success',
-      'Food registered',
-      `${newFood.value} has been registered.`
-    );
   } else {
-    console.log('Invalid input. Cannot add food.');
-    toast.showToast(
-      'error',
-      'Not registered',
-      'Make sure you enter a short food name and number of calories'
+    displayToast(
+      `Invalid input. Only short food name and number of kcal permitted`
     );
   }
 };

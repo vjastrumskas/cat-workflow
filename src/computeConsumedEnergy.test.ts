@@ -1,7 +1,7 @@
 import { describe, it, vi, expect, beforeEach } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
 
-import { useUserData } from './stores/userData.ts'; // Adjust the path
+import { useUserData } from './stores/userData.ts';
 
 describe('computeConsumedEnergy', () => {
   beforeEach(() => {

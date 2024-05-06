@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-
+import displayToast from '../services/toastMessage.ts';
 import { useUserData } from '../stores/userData.ts';
 import { useModalActive } from '../stores/modalController.ts';
 
@@ -38,29 +38,36 @@ function calculateGoal(weightInKg: string, ageInYears: string): string {
 }
 
 function submitForm() {
-  user.resetUserData();
-  user.changeName(userName.value);
-  if (!userExists.value) {
-    user.changeWeight(userWeight.value);
-    user.changeAge(userAge.value);
-    user.changeGoal(calculateGoal(userWeight.value, userAge.value));
-    const existingData = getItem<{ [key: string]: any }>('mealTracker');
-    const combinedData = {
-      ...existingData,
-      [user.user.name]: user.user,
-    };
-    setItem('mealTracker', combinedData);
-    user.insertDateTemplate(route.params.date);
-    userName.value = '';
-    userWeight.value = '';
-    modal.toggleModal();
-  } else {
-    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+  if (
+    user.validateUserName(userName.value) &&
+    user.validateWeight(userWeight.value)
+  ) {
+    user.resetUserData();
+    user.changeName(userName.value);
+    if (!userExists.value) {
+      user.changeWeight(userWeight.value);
+      user.changeAge(userAge.value);
+      user.changeGoal(calculateGoal(userWeight.value, userAge.value));
+      const existingData = getItem<{ [key: string]: any }>('mealTracker');
+      const combinedData = {
+        ...existingData,
+        [user.user.name]: user.user,
+      };
+      setItem('mealTracker', combinedData);
+      user.insertDateTemplate(route.params.date);
+      userName.value = '';
+      userWeight.value = '';
+      modal.toggleModal();
+    } else {
+      const existingData = getItem<{ [key: string]: any }>('mealTracker');
 
-    user.changeUser(existingData?.[userName.value]);
-    userName.value = '';
-    userWeight.value = '';
-    modal.toggleModal();
+      user.changeUser(existingData?.[userName.value]);
+      userName.value = '';
+      userWeight.value = '';
+      modal.toggleModal();
+    }
+  } else {
+    displayToast("Can't login. Enter valid name and weight");
   }
 }
 

@@ -3,11 +3,13 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useModalSettingsActive } from '../stores/modalSettingsController.ts';
 import { useUserData } from '../stores/userData.ts';
+import displayToast from '../services/toastMessage.ts';
 
 import CloseVector from '../assets/CloseVector.vue';
 
 const modalController = useModalSettingsActive();
 const user = useUserData();
+
 const steps = ref('');
 const calories = ref('');
 const userName = ref('');
@@ -55,34 +57,60 @@ const submitForm = (trigger: String) => {
     modalController.toggleNewCaloriesIsActive();
     calories.value = '';
   } else if (trigger === 'replaceName') {
-    user.replaceName(userName.value);
-    modalController.toggleReplaceNameIsActive();
-    userName.value = '';
-  } else if (trigger === 'replaceWeight') {
+    if (user.validateUserName(userName.value)) {
+      user.replaceName(userName.value);
+      modalController.toggleReplaceNameIsActive();
+      displayToast(`Name changed to ${userName.value}`);
+      userName.value = '';
+    } else {
+      displayToast(`Name not changed, must be between 3 to 12 characters long`);
+    }
+  } else if (trigger === 'replaceWeight' && user.validateWeight(weight.value)) {
     user.replaceWeight(weight.value);
     modalController.toggleReplaceWeightIsActive();
     weight.value = '';
   } else if (trigger === 'replaceAge') {
-    user.replaceAge(age.value);
-    modalController.toggleReplaceAgeIsActive();
-    age.value = '';
+    if (user.validateAge(age.value)) {
+      user.replaceAge(age.value);
+      modalController.toggleReplaceAgeIsActive();
+      displayToast(`Age was changed to ${age.value}`);
+      age.value = '';
+    } else {
+      displayToast(`Age not changed. Must be a number between 16 to 120`);
+      age.value = '';
+    }
   } else if (trigger === 'replaceGoal') {
-    user.replaceGoal(goal.value);
-    modalController.toggleReplaceGoalIsActive();
-    goal.value = '';
+    if (user.validateGoal(goal.value)) {
+      user.replaceGoal(goal.value);
+      modalController.toggleReplaceGoalIsActive();
+      goal.value = '';
+
+      displayToast(`Goal was changed to ${goal.value}`);
+    } else {
+      displayToast(`Goal not changed, must be a number`);
+    }
   } else if (trigger === 'editFood') {
     if (confirmedDeletion.value) {
       user.deleteFoodByName(modalController.oldFoodName);
       modalController.toggleEditFoodItem();
       editFoodName.value = '';
       editCalories.value = '';
-    } else {
+      confirmedDeletion.value = false;
+    } else if (user.isFoodValid(editFoodName.value, editCalories.value)) {
       user.changeCalories(modalController.oldFoodName, editCalories.value);
       user.changeFoodName(modalController.oldFoodName, editFoodName.value);
       modalController.toggleEditFoodItem();
+
+      displayToast(
+        `Name changed to ${editFoodName.value} and calories to ${editCalories.value} kcal/100g`
+      );
       editFoodName.value = '';
       editCalories.value = '';
       confirmedDeletion.value = false;
+    } else {
+      displayToast(
+        'Food item not changed. Only short names and number of kcal permitted.'
+      );
     }
   }
 };
@@ -195,11 +223,13 @@ const submitForm = (trigger: String) => {
         <form @submit.prevent="submitForm('replaceWeight')">
           <div>Edit weight:</div>
           <div>
-            <label for="replaceName" style="display: none">Edit weight:</label>
+            <label for="replaceWeight" style="display: none"
+              >Edit weight:</label
+            >
             <input
-              id="replaceName"
+              id="replaceWeight"
               v-model="weight"
-              placeholder="Type in name..."
+              placeholder="Type in weight..."
             />
           </div>
           <div class="note-message">
@@ -225,12 +255,8 @@ const submitForm = (trigger: String) => {
         <form @submit.prevent="submitForm('replaceAge')">
           <div>Edit age:</div>
           <div>
-            <label for="replaceName" style="display: none">Edit age:</label>
-            <input
-              id="replaceName"
-              v-model="age"
-              placeholder="Type in name..."
-            />
+            <label for="replaceAge" style="display: none">Edit age:</label>
+            <input id="replaceAge" v-model="age" placeholder="Type in age..." />
           </div>
           <div class="note-message">* Note this will change your age only.</div>
           <div>
@@ -257,7 +283,7 @@ const submitForm = (trigger: String) => {
             <input
               id="replaceGoal"
               v-model="goal"
-              placeholder="Type in name..."
+              placeholder="Type in goal..."
             />
           </div>
           <div class="note-message">
@@ -289,7 +315,7 @@ const submitForm = (trigger: String) => {
             <input
               id="editFoodName"
               v-model="editFoodName"
-              placeholder="Type in new name..."
+              placeholder="Type in food name..."
               :disabled="confirmedDeletion"
             />
           </div>

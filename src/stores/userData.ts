@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useRoute } from 'vue-router';
-import { useToastMsg } from './toast.ts';
+import displayToast from '../services/toastMessage.ts';
 
 import { getItem, setItem } from '../services/localStorage.ts';
 
@@ -47,10 +47,10 @@ export const useUserData = defineStore('user', () => {
     user.value.name = NewName;
   };
   const changeWeight = (NewWeight: string): void => {
-    user.value.weight = NewWeight;
+    user.value.weight = Math.floor(parseInt(NewWeight, 10)).toString();
   };
   const changeAge = (NewAge: string): void => {
-    user.value.age = NewAge;
+    user.value.age = Math.floor(parseInt(NewAge, 10)).toString();
   };
   const changeGoal = (NewGoal: User['goal']): void => {
     user.value.goal = NewGoal;
@@ -65,7 +65,7 @@ export const useUserData = defineStore('user', () => {
   const changeUser = (NewUser: User): void => {
     user.value = NewUser;
   };
-  const toast = useToastMsg();
+
   const getGoal = (): number => parseInt(user.value.goal, 10);
   const getRoute = (): string | string[] => {
     const route = useRoute();
@@ -226,17 +226,9 @@ export const useUserData = defineStore('user', () => {
           added: true,
           portion: '100',
         });
-        toast.showToast(
-          'success',
-          'Meal added',
-          `'${food}' has been added to ${date}.`
-        );
+        displayToast(`'${food}' has been added to ${date}.`);
       } else {
-        toast.showToast(
-          'warn',
-          'Action stopped',
-          `'${food}' already added to ${date}.`
-        );
+        displayToast(`Action stopped. '${food}' is already added to ${date}.`);
       }
     }
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
@@ -253,7 +245,8 @@ export const useUserData = defineStore('user', () => {
 
     if (existingFood) {
       // Food already exists, handle accordingly (e.g., update portion or energy)
-      toast.showToast('warn', 'Action stopped', `'${food}' is already added.`);
+      displayToast(`Action stopped. '${food}' is already added.`);
+
       // You can modify the existingFood object here if needed
     } else {
       // Food doesn't exist, create a new entry
@@ -270,6 +263,8 @@ export const useUserData = defineStore('user', () => {
         ...existingData,
         [user.value.name]: user.value,
       };
+      displayToast(`${food} has been registered.`);
+
       setItem('mealTracker', combinedData);
     }
   };
@@ -690,6 +685,24 @@ export const useUserData = defineStore('user', () => {
   const isFoodValid = (NewFoodName: string, FoodEnergy: string) =>
     validateNewFood(NewFoodName) && validateFoodEnergy(FoodEnergy);
 
+  const validateUserName = (NewUserName: string) =>
+    NewUserName.length >= 3 && NewUserName.length <= 12;
+
+  const validateWeight = (NewWeight: string) => {
+    const numericValue = parseInt(NewWeight, 10);
+    return numericValue >= 30 && numericValue <= 400;
+  };
+
+  const validateAge = (NewGoal: string) => {
+    const numericValue = parseInt(NewGoal, 10);
+    return numericValue >= 16 && numericValue <= 120;
+  };
+
+  const validateGoal = (NewGoal: string) => {
+    const numericValue = parseInt(NewGoal, 10);
+    return numericValue >= 500 && numericValue <= 4000;
+  };
+
   return {
     user,
     favoriteIsActive,
@@ -734,5 +747,9 @@ export const useUserData = defineStore('user', () => {
     computeStepsGoalAchievement,
     getStepsCompletedModifed,
     isFoodValid,
+    validateUserName,
+    validateAge,
+    validateGoal,
+    validateWeight,
   };
 });
