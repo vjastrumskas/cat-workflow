@@ -119,7 +119,7 @@ onMounted(() => {
           <p data-testid="greetings-message">Hello there, stranger.</p>
         </div>
         <div>
-          <label for="userName" style="display: none">User Name:</label>
+          <label for="userNameInput" style="display: none">User Name:</label>
           <input
             v-model="userName"
             @input="checkForKeyMatch"
@@ -128,7 +128,9 @@ onMounted(() => {
           />
         </div>
         <div v-if="!userExists">
-          <label for="userWeight" style="display: none">User Weight:</label>
+          <label for="userWeightInput" style="display: none"
+            >User Weight:</label
+          >
           <input
             id="userWeightInput"
             v-model="userWeight"
