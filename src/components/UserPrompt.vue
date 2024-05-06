@@ -144,6 +144,7 @@ onMounted(() => {
               :class="{ open: open }"
               @click="open = !open"
               id="initial-option"
+              data-testid="initial-option-test"
             >
               {{ userAge }}
             </div>

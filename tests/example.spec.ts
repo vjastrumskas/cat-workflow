@@ -9,6 +9,7 @@ test('adding a habit', async ({ page }) => {
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle('Brocco Meal Tracker');
   await expect(page.getByText('Hello there, stranger.')).toBeVisible();
-  await page.getByLabel('User Name:').fill('Vaidotas');
-  await page.getByLabel('User Weight:').fill('82');
+  await page.getByPlaceholder("What's your name?").fill('Vaidotas');
+  await page.getByPlaceholder('Your weight').fill('37');
+  await page.getByTestId('initial-option-test').click();
 });
