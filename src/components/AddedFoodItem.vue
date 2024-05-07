@@ -11,11 +11,11 @@ const user = useUserData();
     :key="'addedFood' + index"
   >
     <div class="inner-item-food">
-      <button @click="user.incrementPortion(item.food, $route.params.date)">
+      <button @click="user.updatePortion(item.food, $route.params.date, true)">
         +
       </button>
       {{ item.food }} {{ item.portion }}g
-      <button @click="user.decrementPortion(item.food, $route.params.date)">
+      <button @click="user.updatePortion(item.food, $route.params.date, false)">
         -
       </button>
     </div>
