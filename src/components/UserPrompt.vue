@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import displayToast from '../services/toastMessage.ts';
 import { useUserData } from '../stores/userData.ts';
 import { useModalActive } from '../stores/modalController.ts';
-
 import { setItem, getItem } from '../services/localStorage.ts';
+import { useToaster } from '../stores/toastMsg.ts';
 
 const minAge = 16;
 const maxAge = 120;
@@ -38,16 +37,19 @@ function calculateGoal(weightInKg: string, ageInYears: string): string {
 }
 
 function submitForm() {
-  if (
-    user.validateUserName(userName.value) &&
-    user.validateWeight(userWeight.value)
-  ) {
-    user.resetUserData();
-    user.changeName(userName.value);
-    if (!userExists.value) {
+  const toast = useToaster();
+
+  user.resetUserData();
+  user.changeName(userName.value);
+  if (!userExists.value) {
+    if (
+      user.validateUserName(userName.value) &&
+      user.validateWeight(userWeight.value)
+    ) {
       user.changeWeight(userWeight.value);
       user.changeAge(userAge.value);
       user.changeGoal(calculateGoal(userWeight.value, userAge.value));
+      user.insertDateTemplate(route.params.date);
       const existingData = getItem<{ [key: string]: any }>('mealTracker');
       const combinedData = {
         ...existingData,
@@ -59,15 +61,17 @@ function submitForm() {
       userWeight.value = '';
       modal.toggleModal();
     } else {
-      const existingData = getItem<{ [key: string]: any }>('mealTracker');
-
-      user.changeUser(existingData?.[userName.value]);
-      userName.value = '';
-      userWeight.value = '';
-      modal.toggleModal();
+      toast.setToast("Can't login. Enter valid name and weight in kg.");
     }
   } else {
-    displayToast("Can't login. Enter valid name and weight");
+    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+
+    user.changeUser(existingData?.[userName.value]);
+    userName.value = '';
+    userWeight.value = '';
+    user.insertDateTemplate(route.params.date);
+
+    modal.toggleModal();
   }
 }
 
@@ -127,42 +131,51 @@ onMounted(() => {
             id="userNameInput"
           />
         </div>
-        <div v-if="!userExists">
-          <label for="userWeightInput" style="display: none"
-            >User Weight:</label
-          >
-          <input
-            id="userWeightInput"
-            v-model="userWeight"
-            placeholder="Your weight"
-          />
-        </div>
-        <div v-if="!userExists" class="options-select-menu">
-          <div class="custom-select" :tabindex="tabindex" @blur="open = false">
-            <div
-              class="selected"
-              :class="{ open: open }"
-              @click="open = !open"
-              id="initial-option"
-              data-testid="initial-option-test"
+
+        <Transition>
+          <div v-if="!userExists">
+            <label for="userWeightInput" style="display: none"
+              >User Weight:</label
             >
-              {{ userAge }}
-            </div>
-            <div class="items" :class="{ selectHide: !open }">
+            <input
+              id="userWeightInput"
+              v-model="userWeight"
+              placeholder="Your weight"
+            />
+          </div>
+        </Transition>
+        <Transition>
+          <div v-if="!userExists" class="options-select-menu">
+            <div
+              class="custom-select"
+              :tabindex="tabindex"
+              @blur="open = false"
+            >
               <div
-                v-for="(option, i) of options"
-                :key="i"
-                :id="'options' + i"
-                @click="
-                  userAge = String(option);
-                  open = false;
-                "
+                class="selected"
+                :class="{ open: open }"
+                @click="open = !open"
+                id="initial-option"
+                data-testid="initial-option-test"
               >
-                {{ option }}
+                {{ userAge }}
+              </div>
+              <div class="items" :class="{ selectHide: !open }">
+                <div
+                  v-for="(option, i) of options"
+                  :key="i"
+                  :id="'options' + i"
+                  @click="
+                    userAge = String(option);
+                    open = false;
+                  "
+                >
+                  {{ option }}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </Transition>
         <button id="submit-user-details" type="submit">Submit</button>
       </form>
     </div>
@@ -317,5 +330,15 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>

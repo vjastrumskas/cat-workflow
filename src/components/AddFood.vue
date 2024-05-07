@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import displayToast from '../services/toastMessage.ts';
+import { useToaster } from '../stores/toastMsg.ts';
 
 import { useUserData } from '../stores/userData.ts';
 
@@ -10,12 +10,13 @@ const foodEnergy = ref('');
 const user = useUserData();
 
 const addFood = () => {
+  const toast = useToaster();
   if (user.isFoodValid(newFood.value, foodEnergy.value)) {
     user.addFood(newFood.value, foodEnergy.value);
     newFood.value = '';
     foodEnergy.value = '';
   } else {
-    displayToast(
+    toast.setToast(
       `Invalid input. Only short food name and number of kcal permitted`
     );
   }

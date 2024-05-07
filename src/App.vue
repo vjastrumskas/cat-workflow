@@ -2,12 +2,12 @@
 import { RouterView } from 'vue-router';
 import UserPrompt from './components/UserPrompt.vue';
 import EditModal from './components/EditModal.vue';
-import ToastMessage from './components/ToastMessage.vue';
+import ToastMsg from './components/ToastMsg.vue';
 </script>
 
 <template>
   <UserPrompt />
   <RouterView />
   <EditModal />
-  <ToastMessage />
+  <ToastMsg />
 </template>

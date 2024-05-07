@@ -3,13 +3,13 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useModalSettingsActive } from '../stores/modalSettingsController.ts';
 import { useUserData } from '../stores/userData.ts';
-import displayToast from '../services/toastMessage.ts';
+import { useToaster } from '../stores/toastMsg.ts';
 
 import CloseVector from '../assets/CloseVector.vue';
 
 const modalController = useModalSettingsActive();
 const user = useUserData();
-
+const toast = useToaster();
 const steps = ref('');
 const calories = ref('');
 const userName = ref('');
@@ -60,10 +60,12 @@ const submitForm = (trigger: String) => {
     if (user.validateUserName(userName.value)) {
       user.replaceName(userName.value);
       modalController.toggleReplaceNameIsActive();
-      displayToast(`Name changed to ${userName.value}`);
+      toast.setToast(`Name changed to ${userName.value}`);
       userName.value = '';
     } else {
-      displayToast(`Name not changed, must be between 3 to 12 characters long`);
+      toast.setToast(
+        `Name not changed, must be between 3 to 12 characters long`
+      );
     }
   } else if (trigger === 'replaceWeight' && user.validateWeight(weight.value)) {
     user.replaceWeight(weight.value);
@@ -73,10 +75,11 @@ const submitForm = (trigger: String) => {
     if (user.validateAge(age.value)) {
       user.replaceAge(age.value);
       modalController.toggleReplaceAgeIsActive();
-      displayToast(`Age was changed to ${age.value}`);
+
+      toast.setToast(`Age was changed to ${age.value}`);
       age.value = '';
     } else {
-      displayToast(`Age not changed. Must be a number between 16 to 120`);
+      toast.setToast(`Age not changed. Must be a number between 16 to 120`);
       age.value = '';
     }
   } else if (trigger === 'replaceGoal') {
@@ -85,9 +88,9 @@ const submitForm = (trigger: String) => {
       modalController.toggleReplaceGoalIsActive();
       goal.value = '';
 
-      displayToast(`Goal was changed to ${goal.value}`);
+      toast.setToast(`Goal was changed to ${goal.value}`);
     } else {
-      displayToast(`Goal not changed, must be a number`);
+      toast.setToast(`Goal not changed, must be a number`);
     }
   } else if (trigger === 'editFood') {
     if (confirmedDeletion.value) {
@@ -100,16 +103,15 @@ const submitForm = (trigger: String) => {
       user.changeCalories(modalController.oldFoodName, editCalories.value);
       user.changeFoodName(modalController.oldFoodName, editFoodName.value);
       modalController.toggleEditFoodItem();
-
-      displayToast(
+      toast.setToast(
         `Name changed to ${editFoodName.value} and calories to ${editCalories.value} kcal/100g`
       );
       editFoodName.value = '';
       editCalories.value = '';
       confirmedDeletion.value = false;
     } else {
-      displayToast(
-        'Food item not changed. Only short names and number of kcal permitted.'
+      toast.setToast(
+        `Food item not changed. Only short names and number of kcal permitted.`
       );
     }
   }

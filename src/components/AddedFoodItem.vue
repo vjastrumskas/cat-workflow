@@ -10,7 +10,7 @@ const user = useUserData();
     v-for="(item, index) in user.isAdded()"
     :key="'addedFood' + index"
   >
-    <div class="innter-item-food">
+    <div class="inner-item-food">
       <button @click="user.incrementPortion(item.food, $route.params.date)">
         +
       </button>

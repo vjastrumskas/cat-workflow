@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useRoute } from 'vue-router';
-import displayToast from '../services/toastMessage.ts';
+import { useToaster } from './toastMsg.ts';
 
 import { getItem, setItem } from '../services/localStorage.ts';
 
@@ -214,6 +214,7 @@ export const useUserData = defineStore('user', () => {
   }
 
   const insertFood = (food: string, date: string | string[]) => {
+    const toast = useToaster();
     const targetDate = user.value.dates.find(d => d.date === date);
 
     if (targetDate) {
@@ -226,9 +227,12 @@ export const useUserData = defineStore('user', () => {
           added: true,
           portion: '100',
         });
-        displayToast(`'${food}' has been added to ${date}.`);
+
+        toast.setToast(`'${food}' has been added to ${date}.`);
       } else {
-        displayToast(`Action stopped. '${food}' is already added to ${date}.`);
+        toast.setToast(
+          `Action stopped. '${food}' is already added to ${date}.`
+        );
       }
     }
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
@@ -240,13 +244,14 @@ export const useUserData = defineStore('user', () => {
   };
 
   const addFood = (food: string, baseEnergy: string) => {
+    const toast = useToaster();
     // Check if the food already exists in user.value.foods
     const existingFood = user.value.foods.find(foods => foods.food === food);
 
     if (existingFood) {
       // Food already exists, handle accordingly (e.g., update portion or energy)
-      displayToast(`Action stopped. '${food}' is already added.`);
 
+      toast.setToast(`Action stopped. '${food}' is already added.`);
       // You can modify the existingFood object here if needed
     } else {
       // Food doesn't exist, create a new entry
@@ -263,8 +268,8 @@ export const useUserData = defineStore('user', () => {
         ...existingData,
         [user.value.name]: user.value,
       };
-      displayToast(`${food} has been registered.`);
 
+      toast.setToast(`${food} has been registered.`);
       setItem('mealTracker', combinedData);
     }
   };
@@ -678,7 +683,7 @@ export const useUserData = defineStore('user', () => {
 
   // Validation function for newFood
   const validateNewFood = (NewFoodName: string) =>
-    NewFoodName.length >= 1 && NewFoodName.length <= 12;
+    NewFoodName.length >= 2 && NewFoodName.length <= 13;
 
   // Validation function for foodEnergy
   const validateFoodEnergy = (FoodEnergy: string) => {
