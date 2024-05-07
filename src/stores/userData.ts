@@ -412,8 +412,12 @@ export const useUserData = defineStore('user', () => {
     // Find the specific food item within the date's foods array
     const currentSteps = parseInt(targetDate.steps, 10);
     const currentWeight = parseInt(user.value.weight, 10);
-    const caloriesBurnt = ((currentSteps * currentWeight) / 2000).toString();
-    return caloriesBurnt;
+    const caloriesBurnt = (currentSteps * currentWeight) / 2000;
+    if (!Number.isNaN(caloriesBurnt)) {
+      // Only add to accumulator if foodEnergy is not NaN
+      return caloriesBurnt.toString();
+    }
+    return '0';
   };
 
   const computeTotalCaloriesBurnt = (): number => {
@@ -431,6 +435,9 @@ export const useUserData = defineStore('user', () => {
     );
     const currentCaloriesBurnt = getCaloriesBurnt();
     const caloriesBurnt = computedCaloriesBurntSteps + currentCaloriesBurnt;
+    if (Number.isNaN(caloriesBurnt)) {
+      return 0;
+    }
     return caloriesBurnt;
   };
 
