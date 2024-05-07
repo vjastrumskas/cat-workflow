@@ -2,7 +2,6 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useRoute } from 'vue-router';
 import { useToaster } from './toastMsg.ts';
-
 import { getItem, setItem } from '../services/localStorage.ts';
 
 export const MAX_STEPS_VALUE = 150000;
@@ -74,37 +73,22 @@ export const useUserData = defineStore('user', () => {
 
   const getUserObject = () => user.value;
 
-  const incrementPortion = (
-    foodName: string,
-    date: string | string[]
-  ): void => {
-    // Find the date object based on the provided date
-    const targetDate = user.value.dates.find(d => d.date === date);
-    if (!targetDate) {
-      console.error(`Date ${date} not found.`);
-      return;
-    }
-
-    // Find the specific food item within the date's foods array
-    const foodItem = targetDate.foods.find(item => item.food === foodName);
-    if (foodItem) {
-      const currentPortion = parseInt(foodItem.portion, 10);
-      const newPortion = currentPortion + 25;
-      foodItem.portion = newPortion.toString();
-    } else {
-      console.error(`Food item ${foodName} not found for date ${date}.`);
-    }
-    const existingData = getItem<{ [key: string]: any }>('mealTracker');
+  const mergeData = (
+    existingData: object | null,
+    userKey: string,
+    userObj: object
+  ): object => {
     const combinedData = {
-      ...existingData, // Spread existing data
-      [user.value.name]: user.value, // Add Tadis data dynamically
+      ...existingData,
+      [userKey]: userObj,
     };
-    setItem('mealTracker', combinedData);
+    return combinedData;
   };
 
-  const decrementPortion = (
+  const updatePortion = (
     foodName: string,
-    date: string | string[]
+    date: string | string[],
+    increment: boolean
   ): void => {
     const targetDate = user.value.dates.find(d => d.date === date);
     if (!targetDate) {
@@ -117,7 +101,8 @@ export const useUserData = defineStore('user', () => {
     );
     if (foodIndex !== -1) {
       const currentPortion = parseInt(targetDate.foods[foodIndex].portion, 10);
-      const newPortion = currentPortion - 25;
+      const changeAmount = increment ? 25 : -25;
+      const newPortion = currentPortion + changeAmount;
 
       if (newPortion <= 0) {
         // Remove the foodItem from the array
@@ -126,12 +111,13 @@ export const useUserData = defineStore('user', () => {
         // Update the portion
         targetDate.foods[foodIndex].portion = newPortion.toString();
       }
+    } else {
+      console.error(`Food item ${foodName} not found for date ${date}.`);
     }
-    const existingData = getItem<{ [key: string]: any }>('mealTracker');
-    const combinedData = {
-      ...existingData, // Spread existing data
-      [user.value.name]: user.value, // Add Tadis data dynamically
-    };
+
+    const existingData = getItem<{ [key: string]: object }>('mealTracker');
+    const combinedData = mergeData(existingData, user.value.name, user.value);
+
     setItem('mealTracker', combinedData);
   };
 
@@ -236,10 +222,7 @@ export const useUserData = defineStore('user', () => {
       }
     }
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
-    const combinedData = {
-      ...existingData, // Spread existing data
-      [user.value.name]: user.value, // Add Tadis data dynamically
-    };
+    const combinedData = mergeData(existingData, user.value.name, user.value);
     setItem('mealTracker', combinedData);
   };
 
@@ -367,8 +350,8 @@ export const useUserData = defineStore('user', () => {
     // Update mealTracker data
     const existingData = getItem<{ [key: string]: any }>('mealTracker');
     const combinedData = {
-      ...existingData, // Spread existing data
-      [user.value.name]: user.value, // Add Tadis data dynamically
+      ...existingData,
+      [user.value.name]: user.value,
     };
     setItem('mealTracker', combinedData);
   };
@@ -507,12 +490,10 @@ export const useUserData = defineStore('user', () => {
     const keyToDelete = user.value.name;
     changeName(newName);
     const combinedData = {
-      ...existingData, // Spread existing data
-      // [user.value.name]: user.value, // Add Tadis data dynamically with the new key
-      [newName]: user.value, // Add Tadis data dynamically with the new key
+      ...existingData,
+      [newName]: user.value,
     };
 
-    // Optionally, you can delete the old key if needed
     delete combinedData[keyToDelete];
 
     setItem('mealTracker', combinedData);
@@ -683,7 +664,7 @@ export const useUserData = defineStore('user', () => {
 
   // Validation function for newFood
   const validateNewFood = (NewFoodName: string) =>
-    NewFoodName.length >= 2 && NewFoodName.length <= 13;
+    NewFoodName.length >= 2 && NewFoodName.length <= 15;
 
   // Validation function for foodEnergy
   const validateFoodEnergy = (FoodEnergy: string) => {
@@ -728,8 +709,7 @@ export const useUserData = defineStore('user', () => {
     getGoal,
     getRoute,
     getUserObject,
-    incrementPortion,
-    decrementPortion,
+    updatePortion,
     isAdded,
     getFavorite,
     computeConsumedEnergy,
@@ -763,5 +743,6 @@ export const useUserData = defineStore('user', () => {
     validateAge,
     validateGoal,
     validateWeight,
+    mergeData,
   };
 });
